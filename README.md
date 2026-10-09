@@ -1,4 +1,6 @@
-# 📓 Notebook
+# 🧠 MINDORA
+
+### *Satu Ruang untuk Semua Ide*
 
 Aplikasi pencatatan modern berbasis web yang menggabungkan kekuatan **Notion**, **Obsidian**, dan **Evernote** dalam satu platform. Kelola catatan, tugas, proyek, riset, dan ide kreatif Anda di satu tempat — tanpa perlu install aplikasi, cukup buka browser.
 
@@ -9,11 +11,25 @@ Aplikasi pencatatan modern berbasis web yang menggabungkan kekuatan **Notion**, 
 
 ---
 
-## 🌟 Tentang Notebook
+## 🌟 Tentang MINDORA
 
-**Notebook** adalah workspace digital serba-bisa untuk menulis, merencanakan, dan mengorganisir apapun. Dirancang untuk pelajar, penulis, developer, peneliti, dan siapa saja yang butuh satu tempat untuk semua catatan dan ide.
+**MINDORA** adalah workspace digital serba-bisa untuk menulis, merencanakan, dan mengorganisir apapun. Dirancang untuk pelajar, penulis, developer, peneliti, dan siapa saja yang butuh satu tempat untuk semua catatan dan ide.
 
-### Kenapa Notebook?
+### Apa Arti MINDORA?
+
+| Huruf | Kepanjangan | Makna |
+|:-----:|-------------|-------|
+| **M** | **Mind** | Ruang untuk pikiran dan gagasan Anda |
+| **I** | **Ideas** | Tempat ide lahir, tumbuh, dan saling terhubung |
+| **N** | **Notes** | Catatan kaya fitur dengan editor tingkat lanjut |
+| **D** | **Documents** | Dokumen, file, dan media dalam satu pustaka |
+| **O** | **Organization** | Folder, tag, proyek, tugas, dan kanban |
+| **R** | **Research** | Web clipper, sumber referensi, dan citation generator |
+| **A** | **Archive** | Arsip, riwayat versi, dan pengetahuan jangka panjang |
+
+> **Satu Ruang untuk Semua Ide.**
+
+### Kenapa MINDORA?
 
 - ⚡ **Ringan & Cepat** — dibangun dari teknologi minimalis, tanpa framework berat
 - 🎨 **Editor Kaya** — dukungan markdown, tabel, matematika, diagram, dan embed
@@ -37,7 +53,7 @@ Aplikasi pencatatan modern berbasis web yang menggabungkan kekuatan **Notion**, 
 - **Sort & filter** berdasarkan tanggal, judul, atau relevansi
 
 ### 🎨 Editor Tingkat Lanjut
-Editor Notebook jauh melampaui text editor biasa:
+Editor MINDORA jauh melampaui text editor biasa:
 
 - **Callout blocks** — kotak info, warning, success, danger, tip, note
 - **Toggle sections** — konten yang bisa dilipat
@@ -114,7 +130,7 @@ Editor Notebook jauh melampaui text editor biasa:
 
 ## 🛠️ Tech Stack
 
-Notebook dibangun dengan filosofi **"back to basics"** — tanpa framework berat, tanpa dependency berlebihan. Hasilnya: aplikasi yang ringan, cepat, dan mudah dimodifikasi.
+MINDORA dibangun dengan filosofi **"back to basics"** — tanpa framework berat, tanpa dependency berlebihan. Hasilnya: aplikasi yang ringan, cepat, dan mudah dimodifikasi.
 
 ### Backend
 | Teknologi | Fungsi |
@@ -195,15 +211,15 @@ Ingin menjalankan sendiri atau berkontribusi? Lihat panduan instalasi di bawah.
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/USERNAME/notebook-app.git
-cd notebook-app
+git clone https://github.com/USERNAME/mindora-app.git
+cd mindora-app
 
 # 2. Install dependencies
 go mod download
 
 # 3. Setup database
-mysql -u root -p -e "CREATE DATABASE notebook_db CHARACTER SET utf8mb4;"
-mysql -u root -p notebook_db < schema.sql
+mysql -u root -p -e "CREATE DATABASE mindora_db CHARACTER SET utf8mb4;"
+mysql -u root -p mindora_db < schema.sql
 
 # 4. Konfigurasi environment
 cp .env.example .env
@@ -216,7 +232,7 @@ go run main.go
 Buka `http://localhost:8080` di browser.
 
 **Admin default** akan otomatis dibuat dengan kredensial dari `.env`:
-- Email: `admin@notebook.local`
+- Email: `admin@mindora.local`
 - Password: `admin123`
 
 > ⚠️ **Segera ganti password** setelah login pertama!
@@ -226,7 +242,7 @@ Buka `http://localhost:8080` di browser.
 ## 📁 Struktur Proyek
 
 ```
-notebook-app/
+mindora-app/
 ├── main.go                    # Entry point & routing
 ├── go.mod, go.sum             # Dependencies
 ├── .env                       # Konfigurasi (jangan commit!)
@@ -274,7 +290,7 @@ notebook-app/
 
 ## 🔌 API Overview
 
-Notebook menyediakan **~150 REST endpoint** dengan prefix `/api`.
+MINDORA menyediakan **~150 REST endpoint** dengan prefix `/api`.
 
 ### Contoh Endpoint Utama
 
@@ -323,7 +339,7 @@ X-CSRF-Token: <csrf_token>  (untuk POST/PUT/DELETE)
 
 ## 🔒 Keamanan
 
-Notebook mengambil keamanan dengan serius:
+MINDORA mengambil keamanan dengan serius:
 
 - ✅ **Password hashing** dengan SHA-256 + salt unik per user
 - ✅ **JWT** dengan HMAC-SHA256, access token 15 menit
@@ -376,7 +392,7 @@ Proyek ini dilisensikan di bawah **MIT License** — bebas digunakan, dimodifika
 
 ## 🙏 Kredit
 
-Notebook berdiri di atas kerja keras proyek open-source:
+MINDORA berdiri di atas kerja keras proyek open-source:
 
 - [**Quill**](https://quilljs.com/) — Rich text editor
 - [**KaTeX**](https://katex.org/) — Math rendering
@@ -390,11 +406,14 @@ Notebook berdiri di atas kerja keras proyek open-source:
 
 ## 📞 Kontak
 
-- **Author**: [Nama Anda](https://github.com/ramadikar60)
+- **Author**: [Nama Anda]
 
 ---
 
 <div align="center">
+
+# 🧠 MINDORA
+**Satu Ruang untuk Semua Ide**
 
 ### ⭐ Kalau proyek ini bermanfaat, berikan bintang di GitHub!
 
