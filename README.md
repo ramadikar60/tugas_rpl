@@ -2,12 +2,22 @@
 
 ### *Satu Ruang untuk Semua Ide*
 
-Aplikasi pencatatan modern berbasis web yang menggabungkan kekuatan **Notion**, **Obsidian**, dan **Evernote** dalam satu platform. Kelola catatan, tugas, proyek, riset, dan ide kreatif Anda di satu tempat — tanpa perlu install aplikasi, cukup buka browser.
+Aplikasi pencatatan modern yang menggabungkan kekuatan *rich text editor*, manajemen tugas, tagging, keterkaitan antar-catatan (linking), dan kolaborasi — dibungkus dalam satu aplikasi web yang ringan dan **self-hosted sepenuhnya**.
 
-![Status](https://img.shields.io/badge/status-active-success)
-![Go](https://img.shields.io/badge/Go-1.21+-00ADD8?logo=go&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8.0+-4479A1?logo=mysql&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue)
+Dibangun dengan backend **Go** yang cepat dan minim dependensi, serta frontend **HTML/CSS/JavaScript murni** tanpa build step yang rumit — sehingga mudah di-deploy, di-audit, dan dikembangkan lebih lanjut.
+
+<p>
+  <img alt="Go" src="https://img.shields.io/badge/Backend-Go-00ADD8?style=for-the-badge&logo=go&logoColor=white">
+  <img alt="JavaScript" src="https://img.shields.io/badge/Frontend-JavaScript-18181B?style=for-the-badge&logo=javascript&logoColor=F7DF1E">
+  <img alt="HTML5" src="https://img.shields.io/badge/-HTML5-18181B?style=for-the-badge&logo=html5&logoColor=E34F26">
+  <img alt="CSS3" src="https://img.shields.io/badge/-CSS3-18181B?style=for-the-badge&logo=css3&logoColor=1572B6">
+</p>
+<p>
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-4ade80?style=flat-square">
+  <img alt="Status" src="https://img.shields.io/badge/status-active-4ade80?style=flat-square">
+  <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-38bdf8?style=flat-square">
+  <img alt="Made with love" src="https://img.shields.io/badge/made%20with-%E2%9D%A4%EF%B8%8F-f87171?style=flat-square">
+</p>
 
 ---
 
@@ -406,7 +416,7 @@ MINDORA berdiri di atas kerja keras proyek open-source:
 
 ## 📞 Kontak
 
-- **Author**: [Nama Anda]
+- **Author**: Rama, Adi, Alit, Herman
 
 ---
 
