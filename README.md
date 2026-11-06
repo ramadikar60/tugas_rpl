@@ -2,6 +2,8 @@
 
 ### *Satu Ruang untuk Semua Ide*
 
+### *https://www.figma.com/design/wfiz5ToR1LwijQ0xMfmauy/MINDORA---TUGAS-RPL?node-id=0-1&p=f*
+
 Aplikasi pencatatan modern yang menggabungkan kekuatan *rich text editor*, manajemen tugas, tagging, keterkaitan antar-catatan (linking), dan kolaborasi — dibungkus dalam satu aplikasi web yang ringan dan **self-hosted sepenuhnya**.
 
 Dibangun dengan backend **Go** yang cepat dan minim dependensi, serta frontend **HTML/CSS/JavaScript murni** tanpa build step yang rumit — sehingga mudah di-deploy, di-audit, dan dikembangkan lebih lanjut.
