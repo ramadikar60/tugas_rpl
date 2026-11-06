@@ -1,0 +1,313 @@
+/* ============================================================
+   THEME.CSS - Solarpunk Editorial (Prompt 2, versi lapisan tema)
+   Dimuat SETELAH style.css. Mengganti token warna, tipografi, dan gaya
+   komponen utama tanpa mengubah markup atau logika.
+
+   Aturan: tanpa gradien dekoratif, tanpa emoji, emas hanya untuk dekorasi
+   (bukan teks), teks aksen memakai #3D6B45 (terang) / #8FC48E (gelap).
+   ============================================================ */
+
+/* ---------- Font (self-host, tanpa server luar) ---------- */
+@font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 400; font-display: swap; src: url('/static/fonts/fraunces-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 600; font-display: swap; src: url('/static/fonts/fraunces-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 700; font-display: swap; src: url('/static/fonts/fraunces-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Fraunces'; font-style: italic; font-weight: 400; font-display: swap; src: url('/static/fonts/fraunces-latin-400-italic.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('/static/fonts/ibm-plex-sans-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('/static/fonts/ibm-plex-sans-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('/static/fonts/ibm-plex-sans-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('/static/fonts/ibm-plex-sans-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('/static/fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'IBM Plex Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/static/fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2'); }
+
+/* ---------- Token: terang ---------- */
+:root {
+  --parch: #FBF4E0;
+  --parch-2: #F4EAD0;
+  --parch-warm: #F8ECD5;
+  --ink: #1A2A1E;
+  --ink-2: #4A5C48;
+  --forest: #1E3E2F;
+  --leaf: #4A7C4E;
+  --sage: #C8D4B8;
+  --sun: #E8A838;       /* dekorasi saja, bukan teks */
+  --line: #E0D6BA;
+  --bata: #A04A2A;      /* teks peringatan/bahaya */
+
+  --bg-app: var(--parch);
+  --bg-panel: #FFFCF2;
+  --bg-elev: #FFFDF6;
+  --bg-muted: var(--parch-2);
+  --bg-sidebar: var(--parch-2);
+  --text-strong: var(--ink);
+  --text: var(--ink);
+  --text-muted: var(--ink-2);
+  --text-faint: #5E6E5B;
+  --border: var(--line);
+  --border-strong: #C9BC93;
+  --accent: #3D6B45;
+  --accent-hover: var(--forest);
+  --accent-soft: #DDE8CB;
+  --danger: var(--bata);
+  --success: #3D6B45;
+  --warning: #8A5A00;
+  --info: #2F5F73;
+  --focus-ring: #3D6B45;
+
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --shadow-sm: 0 1px 2px rgba(30, 62, 47, 0.08);
+  --shadow: 0 2px 8px rgba(30, 62, 47, 0.10);
+  --shadow-lg: 0 12px 32px rgba(30, 62, 47, 0.16);
+
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --btn-bg: var(--forest);
+  --btn-fg: #FBF4E0;
+  --btn-bg-hover: #2B5441;
+  --overlay: rgba(26, 42, 30, 0.45);
+}
+
+/* ---------- Token: gelap ---------- */
+[data-theme="dark"] {
+  --bg-app: #0F1A14;
+  --bg-panel: #16241B;
+  --bg-elev: #1D2E23;
+  --bg-muted: #1D2E23;
+  --bg-sidebar: #0F1A14;
+  --text-strong: #E8F1E3;
+  --text: #D8E6D2;
+  --text-muted: #A5B8A0;
+  --text-faint: #8FA58B;
+  --border: #2A3D2F;
+  --border-strong: #3A5240;
+  --accent: #8FC48E;
+  --accent-hover: #B2DBAF;
+  --accent-soft: #223A2A;
+  --danger: #E58F6A;
+  --success: #8FC48E;
+  --warning: #E8A838;
+  --info: #7DBBD0;
+  --focus-ring: #8FC48E;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  --btn-bg: #8FC48E;
+  --btn-fg: #0F1A14;
+  --btn-bg-hover: #A9D6A8;
+  --overlay: rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- Dasar ---------- */
+html, body {
+  font-family: var(--font-body);
+  background: var(--bg-app);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--sun); color: #1A2A1E; }
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+code, pre, kbd, samp { font-family: var(--font-mono); }
+
+h1, h2, h3, h4,
+.auth-brand h1, .auth-card h2, .modal-header h3, .brand-inline strong, .stat-value, .card-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-strong);
+}
+h1 { font-weight: 700; }
+
+/* ---------- Merek ---------- */
+.brand-mark {
+  width: 52px; height: 52px;
+  border-radius: 62% 8% 62% 8%;   /* bentuk daun */
+  background: var(--forest);
+  position: relative;
+}
+.brand-mark::after {              /* matahari kecil */
+  content: '';
+  position: absolute;
+  inset: auto;
+  top: -5px; right: -7px;
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  background: var(--sun);
+  opacity: 1;
+}
+.brand-dot {
+  width: 20px; height: 20px;
+  border-radius: 62% 8% 62% 8%;
+  background: var(--forest);
+  position: relative;
+}
+.brand-dot::after { content: ''; position: absolute; background: var(--sun); inset: auto; top: -3px; right: -3px; width: 8px; height: 8px; border-radius: 50%; opacity: 1; }
+[data-theme="dark"] .brand-mark, [data-theme="dark"] .brand-dot { background: var(--accent); }
+.auth-brand h1 { font-size: 32px; }
+.brand-tagline { font-style: italic; font-family: var(--font-display); font-size: 14px; color: var(--text-muted); }
+
+/* ---------- Tombol ---------- */
+.btn-primary, .btn-primary-block {
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: 1px solid var(--btn-bg);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: background .18s ease, transform .12s ease, box-shadow .18s ease;
+}
+.btn-primary:hover, .btn-primary-block:hover { background: var(--btn-bg-hover); border-color: var(--btn-bg-hover); box-shadow: var(--shadow); }
+.btn-primary:active, .btn-primary-block:active { transform: translateY(1px); box-shadow: none; }
+.btn-ghost-sm, .btn-more, .icon-btn {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+}
+.btn-ghost-sm:hover, .btn-more:hover, .icon-btn:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.theme-btn { color: var(--text-muted); border-radius: var(--radius); }
+.theme-btn:hover { color: var(--accent); }
+.theme-icon { display: inline-flex; align-items: center; justify-content: center; }
+.theme-icon svg { display: block; }
+
+/* ---------- Input ---------- */
+input[type="text"], input[type="email"], input[type="password"], input[type="search"],
+input[type="date"], input[type="number"], input:not([type]), textarea, select {
+  background: var(--bg-panel);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+}
+input::placeholder, textarea::placeholder { color: var(--text-faint); }
+input:focus, textarea:focus, select:focus { border-color: var(--accent); outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+#noteTitle { font-family: var(--font-display); font-weight: 600; border: 0; background: transparent; }
+
+/* ---------- Sidebar dan navigasi ---------- */
+.sidebar { background: var(--bg-sidebar); border-right: 1px solid var(--border); }
+.nav a { color: var(--text-muted); border-radius: var(--radius); transition: background .16s ease, color .16s ease; }
+.nav a:hover { background: var(--accent-soft); color: var(--text-strong); }
+.nav a.active, .nav-primary a.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+  border-left: 3px solid var(--leaf);
+}
+.nav-section-label, .section-title { color: var(--text-faint); letter-spacing: .08em; }
+.btn-logout { border-radius: var(--radius); }
+
+/* Pengalih tampilan: aktif = teks hijau + garis hijau di bawah label */
+.subnav { background: var(--bg-app); border-bottom: 1px solid var(--border); gap: 2px; }
+.subnav-tab {
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 8px 14px;
+  color: var(--text-muted);
+  background: transparent;
+  font-weight: 500;
+}
+.subnav-tab:hover { background: transparent; color: var(--text-strong); border-bottom-color: var(--sage); }
+.subnav-tab.active { color: var(--accent); background: transparent; border-bottom-color: var(--leaf); font-weight: 600; }
+
+/* ---------- Kartu catatan ---------- */
+.note-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.note-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--border-strong); }
+.card-title { font-size: 17px; line-height: 1.3; }
+.card-preview { color: var(--text-muted); }
+.badge { background: var(--accent-soft); color: var(--accent); border-radius: 999px; letter-spacing: .04em; }
+.card-footer { border-top: 1px solid var(--border); color: var(--text-faint); }
+
+/* Chip tag di sidebar: warna tag hanya sebagai titik, teks selalu kontras */
+#tagList li, #tagList .tag-chip { color: var(--text) !important; display: inline-flex; align-items: center; gap: 6px; }
+#tagList li::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--tag-color, var(--leaf)); flex: 0 0 auto; }
+
+/* ---------- Kartu statistik, modal, menu, toast ---------- */
+.stat-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+.stat-value { font-size: 30px; font-weight: 700; }
+.modal { background: var(--overlay); }
+.modal-content { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); }
+.more-menu { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-lg); }
+.toast { background: var(--forest); color: #FBF4E0; border-radius: var(--radius); box-shadow: var(--shadow-lg); font-family: var(--font-body); }
+.toast.success { background: var(--forest); color: #FBF4E0; }
+.toast.error { background: var(--bata); color: #FFF7EC; }
+[data-theme="dark"] .toast { background: var(--bg-elev); color: var(--text-strong); border: 1px solid var(--border-strong); }
+[data-theme="dark"] .toast.success { background: #1F3A2A; color: var(--text-strong); }
+[data-theme="dark"] .toast.error { background: #5A2A1C; color: #FFE9DE; }
+.badge-current { background: var(--accent-soft); color: var(--accent); }
+
+/* ---------- Tombol aksi mengambang (+) ---------- */
+.quick-add-fab {
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--sun);
+}
+body:has(#authView:not([style*="display: none"])) .quick-add-fab { display: none; }
+
+/* ---------- Bilah progres ---------- */
+.storage-quota-fill, .progress-fill, .progress-bar-fill { background: var(--leaf); border-radius: 999px; }
+.storage-quota-fill.warning { background: var(--warning); }
+
+/* ---------- Editor ---------- */
+.ql-editor { font-family: var(--font-body); font-size: 16px; line-height: 1.7; color: var(--text); }
+.ql-editor h1, .ql-editor h2, .ql-editor h3 { font-family: var(--font-display); }
+.ql-editor blockquote { border-left: 3px solid var(--sun); color: var(--text-muted); }
+.ql-editor a { color: var(--accent); }
+.ql-editor code, .ql-editor pre, .ql-editor .ql-code-block-container { font-family: var(--font-mono); background: var(--bg-muted); border-radius: var(--radius-sm); }
+
+/* ---------- Animasi halus ---------- */
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes pop { from { opacity: 0; transform: scale(.96) translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+.note-card, .stat-card { animation: rise .35s ease both; }
+.note-card:nth-child(2), .stat-card:nth-child(2) { animation-delay: .04s; }
+.note-card:nth-child(3), .stat-card:nth-child(3) { animation-delay: .08s; }
+.note-card:nth-child(4), .stat-card:nth-child(4) { animation-delay: .12s; }
+.note-card:nth-child(5) { animation-delay: .16s; }
+.note-card:nth-child(6) { animation-delay: .20s; }
+.modal-content, .auth-card { animation: pop .22s ease both; }
+.more-menu { animation: pop .14s ease both; }
+.brand-mark::after { animation: breathe 5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ---------- Scrollbar ---------- */
+* { scrollbar-width: thin; scrollbar-color: var(--border-strong) transparent; }
+
+/* ---------- Dashboard: grafik dan ikon memakai palet tema (tanpa warna di luar palet) ---------- */
+.bar-segment.notes,    .chart-legend-dot[data-series="notes"]    { background: var(--info); }
+.bar-segment.tasks,    .chart-legend-dot[data-series="tasks"]    { background: var(--accent); }
+.bar-segment.pomodoro, .chart-legend-dot[data-series="pomodoro"] { background: var(--sun); }
+
+.dash-card-icon { font-size: 0; line-height: 1; margin-bottom: 8px; color: var(--accent); }
+.dash-card-icon svg { display: block; }
+.dash-card.accent-info    .dash-card-icon { color: var(--info); }
+.dash-card.accent-warning .dash-card-icon { color: var(--warning); }
+.dash-card.accent-danger  .dash-card-icon { color: var(--danger); }
+
+/* Ikon SVG di tombol (menggantikan emoji) */
+button svg, .theme-icon svg, .slash-icon svg, .project-icon-large svg { display: block; margin: 0 auto; }
+.project-icon-large { color: var(--accent); }
+.quick-hint-icon { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); }
+
+/* Ikon SVG di palet perintah dan lencana */
+.command-item-icon { display: flex; align-items: center; justify-content: center; }
+.command-item-icon svg { display: block; }
+.shared-badge-icon { font-size: 12px; line-height: 1; }

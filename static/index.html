@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>Mindora</title>
+
+<!-- Quill CSS -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/quill-better-table@1.2.10/dist/quill-better-table.css" rel="stylesheet">
+
+<!-- KaTeX (Math) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<!-- Highlight.js (Code Syntax) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css" id="hljsLight">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css" id="hljsDark" disabled>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js"></script>
+
+<!-- Mermaid (Diagram) -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+
+<!-- Font -->
+
+<!-- App CSS -->
+<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="/static/theme.css">
+<link rel="stylesheet" href="/static/polish.css?v=20261103">
+</head>
+<body>
+
+<!-- ============================================================
+     AUTH VIEW
+     ============================================================ -->
+<div id="authView" class="auth-view">
+  <div class="auth-container">
+    <div class="auth-brand">
+      <div class="brand-mark"></div>
+      <h1>Mindora</h1>
+      <p class="brand-tagline">Satu ruang untuk semua ide</p>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-theme-toggle">
+        <button onclick="toggleTheme()" id="authThemeBtn" class="theme-btn" aria-label="Toggle theme">
+          <span class="theme-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
+        </button>
+      </div>
+
+      <div id="loginForm">
+        <h2>Masuk</h2>
+        <p class="auth-subtitle">Selamat datang kembali</p>
+
+        <form onsubmit="event.preventDefault(); login();" autocomplete="on">
+          <label class="field">
+            <span>Email</span>
+            <input id="loginEmail" type="email" placeholder="nama@email.com" autocomplete="email">
+          </label>
+
+          <label class="field">
+            <span>Password</span>
+            <input id="loginPassword" type="password" placeholder="Masukkan password" autocomplete="current-password">
+          </label>
+
+          <button type="submit" class="btn-primary-block">Masuk</button>
+        </form>
+
+        <div class="auth-links">
+          <a href="#" onclick="showForgot(); return false;">Lupa password?</a>
+          <span class="divider-dot">·</span>
+          <a href="#" onclick="showRegister()">Buat akun baru</a>
+        </div>
+      </div>
+
+      <div id="registerForm" style="display:none">
+        <h2>Buat Akun</h2>
+        <p class="auth-subtitle">Mulai mencatat dalam hitungan detik</p>
+
+        <form onsubmit="event.preventDefault(); register();" autocomplete="on">
+          <label class="field">
+            <span>Username</span>
+            <input id="regUsername" placeholder="username" autocomplete="username">
+          </label>
+
+          <label class="field">
+            <span>Email</span>
+            <input id="regEmail" type="email" placeholder="nama@email.com" autocomplete="email">
+          </label>
+
+          <label class="field">
+            <span>Password</span>
+            <input id="regPassword" type="password" placeholder="Minimal 10 karakter" autocomplete="new-password">
+          </label>
+
+          <button type="submit" class="btn-primary-block">Daftar</button>
+        </form>
+
+        <div class="auth-links">
+          <a href="#" onclick="showLogin()">Sudah punya akun? Masuk</a>
+        </div>
+      </div>
+
+      <div id="forgotForm" style="display:none">
+        <h2>Lupa Password</h2>
+        <p class="auth-subtitle">Kami akan mengirim tautan untuk mengatur ulang password</p>
+
+        <form onsubmit="event.preventDefault(); submitForgot();" autocomplete="on">
+          <label class="field">
+            <span>Email</span>
+            <input id="forgotEmail" type="email" placeholder="nama@email.com" autocomplete="email">
+          </label>
+
+          <button type="submit" id="forgotSubmitBtn" class="btn-primary-block">Kirim tautan</button>
+        </form>
+
+        <div class="auth-links">
+          <a href="#" onclick="showLogin(); return false;">Kembali ke Masuk</a>
+        </div>
+      </div>
+
+      <div id="resetForm" style="display:none">
+        <h2>Atur Password Baru</h2>
+        <p class="auth-subtitle">Pilih password baru untuk akun Anda</p>
+
+        <form onsubmit="event.preventDefault(); submitReset();" autocomplete="on">
+          <label class="field">
+            <span>Password baru</span>
+            <input id="resetPassword" type="password" placeholder="Minimal 10 karakter" autocomplete="new-password">
+          </label>
+
+          <label class="field">
+            <span>Ulangi password</span>
+            <input id="resetPassword2" type="password" placeholder="Ulangi password baru" autocomplete="new-password">
+          </label>
+
+          <button type="submit" id="resetSubmitBtn" class="btn-primary-block">Simpan password</button>
+        </form>
+
+        <div class="auth-links">
+          <a href="#" onclick="cancelReset(); return false;">Batal</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     APP VIEW
+     ============================================================ -->
+<div id="appView" class="app-view" style="display:none">
+
+  <!-- Mobile top bar -->
+  <header class="mobile-bar">
+    <button class="btn-ghost" onclick="toggleSidebar()" aria-label="Menu">Menu</button>
+    <strong id="mobileBarTitle">Mindora</strong>
+    <div class="mobile-bar-actions">
+      <button class="theme-btn theme-btn-sm" onclick="toggleTheme()" id="mobileThemeBtn" aria-label="Tema">
+        <span class="theme-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
+      </button>
+      <button class="theme-btn theme-btn-sm notification-btn" onclick="openNotificationPanel()" aria-label="Notifikasi">
+        <span class="theme-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21a2 2 0 0 0 4 0"/></svg></span>
+        <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ============================================================
+       SIDEBAR (MODERN VERSION)
+       ============================================================ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-inline">
+        <span class="brand-dot"></span>
+        <strong>Mindora</strong>
+      </div>
+      <div class="sidebar-header-actions">
+        <button class="theme-btn theme-btn-sm" onclick="toggleTheme()" id="sideThemeBtn" aria-label="Tema">
+          <span class="theme-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
+        </button>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Menu</div>
+    <nav class="nav nav-primary" id="primaryNav" aria-label="Menu utama">
+      <a href="#" data-nav="home" onclick="event.preventDefault(); navMain('home')">Beranda</a>
+      <a href="#" data-nav="notes" onclick="event.preventDefault(); navMain('notes')">Catatan</a>
+      <a href="#" data-nav="plan" onclick="event.preventDefault(); navMain('plan')">Rencana</a>
+      <a href="#" data-nav="library" onclick="event.preventDefault(); navMain('library')">Pustaka</a>
+      <a href="#" data-nav="ai" onclick="event.preventDefault(); navMain('ai')">Asisten AI</a>
+    </nav>
+
+    <div class="section">
+      <div class="section-title">
+        <span>Folder</span>
+        <button class="btn-ghost-sm" onclick="createNotebook()">+ Baru</button>
+      </div>
+      <ul id="notebookTree" class="tree"></ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <span>Tag</span>
+        <button class="btn-ghost-sm" onclick="createTag()">+ Baru</button>
+      </div>
+      <ul id="tagList" class="tags"></ul>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="more-wrap">
+        <button type="button" class="btn-more" id="moreBtn" aria-haspopup="menu" aria-expanded="false" onclick="toggleMoreMenu(event)">Lainnya</button>
+        <div class="more-menu" id="moreMenu" role="menu" style="display:none;">
+          <button type="button" role="menuitem" onclick="toggleTheme()">Mode gelap atau terang</button>
+          <a role="menuitem" href="#" onclick="event.preventDefault(); navigateTo('productivity')">Produktivitas dan Pomodoro</a>
+          <a role="menuitem" href="#" onclick="event.preventDefault(); navigateTo('mindmaps')">Peta Pikiran</a>
+          <a role="menuitem" href="#" onclick="event.preventDefault(); navigateTo('whiteboards')">Papan Tulis</a>
+          <a role="menuitem" href="#" onclick="event.preventDefault(); navigateTo('graph')">Graf Catatan</a>
+          <a role="menuitem" href="#" onclick="event.preventDefault(); navigateTo('notifications')">Notifikasi <span class="notif-badge-inline" id="notifBadgeInline" style="display:none;">0</span></a>
+          <a role="menuitem" href="#" onclick="event.preventDefault(); navigateTo('datamanage')">Manajemen Data</a>
+          <a role="menuitem" href="#" onclick="event.preventDefault(); navigateTo('shared')">Dibagikan ke Saya</a>
+          <a role="menuitem" href="#" onclick="event.preventDefault(); navigateTo('activity')">Aktivitas</a>
+          <a role="menuitem" href="#" onclick="event.preventDefault(); navigateTo('profile')">Profil Saya</a>
+          <a role="menuitem" href="/admin" id="adminMenuLink" style="display:none;">Panel Admin</a>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">
+        <span>Keluar</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <main class="main-area" id="mainArea">
+    <div id="subNav" class="subnav" style="display:none;"></div>
+
+    <!-- MODE LIST -->
+    <div id="listMode" class="mode mode-list">
+      <div class="list-header">
+        <div class="list-header-info">
+          <h2 id="listTitle">Semua Catatan</h2>
+          <p id="listSubtitle">Klik catatan untuk membuka dan mengedit</p>
+        </div>
+        <div class="list-header-actions">
+          <div class="search-wrapper">
+            <input id="searchInput" placeholder="Cari catatan..." oninput="debouncedSearch()">
+          </div>
+          <button class="btn-ghost-sm" onclick="openSearchModal()" title="Pencarian lanjutan">Filter</button>
+          <button class="btn-ghost-sm" onclick="showTemplatePicker()" title="Buat catatan dari templat">Dari Templat</button>
+          <button class="btn-primary" onclick="createNote()">Catatan Baru</button>
+        </div>
+      </div>
+
+      <div id="trashActions" class="trash-actions" style="display:none;">
+        <div class="trash-info">
+          Catatan di sampah akan <strong>dihapus otomatis setelah 30 hari</strong>.
+        </div>
+        <button class="btn-danger" onclick="emptyTrash()">Kosongkan Sampah</button>
+      </div>
+
+      <div id="notesGrid" class="notes-grid"></div>
+    </div>
+
+    <!-- MODE EDITOR -->
+    <div id="editorMode" class="mode mode-editor" style="display:none;">
+      <div class="editor-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeEditor()">Kembali</button>
+        <input id="noteTitle" placeholder="Judul catatan" oninput="onTitleChange()">
+        <div class="editor-actions" id="editorActions">
+          <button onclick="openShareModal()" title="Bagikan">Bagikan</button>
+          <button onclick="openAIPanel()" id="aiBtn" title="Asisten AI: ringkas, perbaiki tulisan, terjemahkan, dan lainnya">Asisten AI</button>
+          <div class="more-wrap editor-more">
+            <button type="button" class="icon-btn" id="editorMoreBtn" aria-label="Aksi catatan" aria-haspopup="menu" aria-expanded="false" onclick="toggleEditorMenu(event)">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+            </button>
+            <div class="more-menu" id="editorMenu" role="menu" style="display:none;">
+              <button role="menuitem" onclick="togglePin()" id="pinBtn" title="Sematkan">Sematkan</button>
+              <button role="menuitem" onclick="toggleFavorite()" id="favBtn" title="Favorit">Favorit</button>
+              <button role="menuitem" onclick="toggleArchive()" id="archBtn" title="Arsip">Arsipkan</button>
+              <button role="menuitem" onclick="toggleLock()" id="lockBtn" title="Kunci">Kunci</button>
+              <button role="menuitem" onclick="toggleReadOnly()" id="readonlyBtn" title="Hanya-baca">Hanya-baca</button>
+              <button role="menuitem" onclick="duplicateNote()" id="duplicateBtn" title="Duplikat">Duplikat</button>
+              <button role="menuitem" onclick="syncChecklistToTasks()" title="Ubah daftar centang menjadi tugas">Jadikan tugas</button>
+              <button role="menuitem" onclick="openSaveTemplateModal()" title="Simpan sebagai templat">Simpan sebagai templat</button>
+              <button role="menuitem" onclick="showAttachMenu()" title="Lampiran">Lampiran</button>
+              <button role="menuitem" onclick="switchEditorTab('versions')" title="Riwayat versi">Riwayat versi</button>
+              <button role="menuitem" onclick="trashNote()" id="trashBtn" title="Hapus">Hapus</button>
+              <button role="menuitem" onclick="restoreNote()" id="restoreBtn" style="display:none;">Pulihkan</button>
+              <button role="menuitem" onclick="deleteForever()" id="deleteForeverBtn" style="display:none; color: var(--danger);">Hapus Permanen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="editor-tabs">
+        <button class="editor-tab active" onclick="switchEditorTab('content')" data-tab="content">Konten</button>
+        <button class="editor-tab" onclick="switchEditorTab('backlinks')" data-tab="backlinks">Tautan Balik</button>
+        <button class="editor-tab" onclick="switchEditorTab('comments')" data-tab="comments">Komentar</button>
+        <button class="editor-tab" onclick="switchEditorTab('versions')" data-tab="versions">Versi</button>
+      </div>
+
+      <!-- Panel: Content -->
+      <div class="editor-panel" id="panelContent" style="display:flex;">
+        <div id="toolbar">
+          <span class="ql-formats">
+            <select class="ql-header">
+              <option value="1">H1</option>
+              <option value="2">H2</option>
+              <option value="3">H3</option>
+              <option value="4">H4</option>
+              <option value="5">H5</option>
+              <option value="6">H6</option>
+              <option selected>Normal</option>
+            </select>
+          </span>
+          <span class="ql-formats">
+            <select class="ql-size">
+              <option value="small">Kecil</option>
+              <option selected>Normal</option>
+              <option value="large">Besar</option>
+              <option value="huge">Sangat besar</option>
+            </select>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-underline"></button>
+            <button class="ql-strike"></button>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-blockquote"></button>
+            <button class="ql-code-block"></button>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-list" value="ordered"></button>
+            <button class="ql-list" value="bullet"></button>
+            <button class="ql-list" value="check"></button>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-link"></button>
+            <button class="ql-image"></button>
+            <button id="insertTableBtn" title="Tabel">Tabel</button>
+            <button id="insertHrBtn" title="Garis horizontal">―</button>
+          </span>
+          <span class="ql-formats">
+            <select class="ql-align">
+              <option selected></option>
+              <option value="center"></option>
+              <option value="right"></option>
+              <option value="justify"></option>
+            </select>
+            <select class="ql-color"></select>
+            <select class="ql-background"></select>
+          </span>
+
+          <!-- Advanced blocks -->
+          <span class="ql-formats adv-formats">
+            <button id="insertCalloutBtn" title="Callout"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></button>
+            <button id="insertToggleBtn" title="Toggle section">▸</button>
+            <button id="insertColumnsBtn" title="Columns">☰</button>
+            <button id="insertMathBtn" title="Equation">∑</button>
+            <button id="insertMermaidBtn" title="Diagram">◇</button>
+            <button id="insertTocBtn" title="Table of Contents">≡</button>
+            <button id="insertFootnoteBtn" title="Footnote">#</button>
+            <button id="insertBookmarkBtn" title="Bookmark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button>
+            <button id="insertEmbedBtn" title="Embed">⧉</button>
+          </span>
+
+          <span class="ql-formats">
+            <button class="ql-clean"></button>
+          </span>
+        </div>
+
+        <div id="editor"></div>
+
+        <div class="editor-footer">
+          <div class="editor-stats" id="editorStats">
+            <span id="wordCount">0 kata</span>
+            <span class="divider-dot">·</span>
+            <span id="charCount">0 karakter</span>
+            <span class="divider-dot">·</span>
+            <span id="readTime">0 menit baca</span>
+          </div>
+          <div id="attachmentsPreview" class="attachments"></div>
+          <div class="status" id="saveStatus"></div>
+        </div>
+      </div>
+
+      <div class="editor-panel" id="panelBacklinks" style="display:none;"></div>
+      <div class="editor-panel" id="panelComments" style="display:none;"></div>
+      <div class="editor-panel" id="panelVersions" style="display:none;"></div>
+    </div>
+
+    <!-- MODE TASKS -->
+    <div id="tasksMode" class="mode mode-tasks" style="display:none;">
+      <div class="tasks-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeTasks()">Kembali</button>
+        <div class="tasks-title-group">
+          <h2>Tugas</h2>
+          <p>Kelola semua tugas Anda</p>
+        </div>
+        <div class="tasks-header-actions">
+          <button class="btn-ghost-sm" onclick="switchTaskView('list')" id="viewListBtn">List</button>
+          <button class="btn-ghost-sm" onclick="switchTaskView('kanban')" id="viewKanbanBtn">Kanban</button>
+          <button class="btn-primary" onclick="showCreateTaskModal()">+ Tugas Baru</button>
+        </div>
+      </div>
+
+      <div class="tasks-stats" id="taskStats"></div>
+
+      <div class="tasks-filters">
+        <select id="taskStatusFilter" onchange="loadTasks()">
+          <option value="all">Semua status</option>
+          <option value="pending">Pending</option>
+          <option value="in_progress">Sedang dikerjakan</option>
+          <option value="done">Selesai</option>
+          <option value="cancelled">Dibatalkan</option>
+        </select>
+        <select id="taskPriorityFilter" onchange="loadTasks()">
+          <option value="">Semua prioritas</option>
+          <option value="urgent">Urgent</option>
+          <option value="high">Tinggi</option>
+          <option value="medium">Sedang</option>
+          <option value="low">Rendah</option>
+        </select>
+        <select id="taskDueFilter" onchange="loadTasks()">
+          <option value="">Semua tanggal</option>
+          <option value="today">Hari ini</option>
+          <option value="week">7 hari ke depan</option>
+          <option value="month">30 hari ke depan</option>
+          <option value="overdue">Terlambat</option>
+          <option value="no_due">Tanpa tanggal</option>
+        </select>
+        <input id="taskSearch" placeholder="Cari tugas..." oninput="debouncedTaskSearch()">
+      </div>
+
+      <div id="taskListView" class="task-list-view"></div>
+      <div id="taskKanbanView" class="task-kanban-view" style="display:none;">
+        <div class="kanban-column" data-status="pending">
+          <div class="kanban-header">
+            <span>Pending</span>
+            <span class="kanban-count" id="kanbanPendingCount">0</span>
+          </div>
+          <div class="kanban-body" id="kanbanPending"></div>
+        </div>
+        <div class="kanban-column" data-status="in_progress">
+          <div class="kanban-header">
+            <span>Dikerjakan</span>
+            <span class="kanban-count" id="kanbanProgressCount">0</span>
+          </div>
+          <div class="kanban-body" id="kanbanInProgress"></div>
+        </div>
+        <div class="kanban-column" data-status="done">
+          <div class="kanban-header">
+            <span>Selesai</span>
+            <span class="kanban-count" id="kanbanDoneCount">0</span>
+          </div>
+          <div class="kanban-body" id="kanbanDone"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- CALENDAR MODE -->
+    <!-- ============================================================ -->
+    <div id="calendarMode" class="mode mode-calendar" style="display:none;">
+      <div class="calendar-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeCalendar()">Kembali</button>
+        <div class="calendar-nav">
+          <button class="btn-ghost-sm" onclick="calendarPrevMonth()">‹</button>
+          <h2 id="calendarMonthTitle">Januari 2026</h2>
+          <button class="btn-ghost-sm" onclick="calendarNextMonth()">›</button>
+          <button class="btn-ghost-sm" onclick="calendarGoToday()">Hari Ini</button>
+        </div>
+        <div class="calendar-view-switch">
+          <button class="active" data-view="month" onclick="switchCalendarView('month')">Bulan</button>
+        </div>
+      </div>
+
+      <div class="calendar-stats" id="calendarStats"></div>
+
+      <div class="calendar-month-view">
+        <div class="calendar-weekdays">
+          <div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div>
+          <div>Jum</div><div>Sab</div><div>Min</div>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </div>
+
+      <div class="calendar-day-panel" id="calendarDayPanel" style="display:none;">
+        <div class="calendar-day-header">
+          <h3 id="calendarDayTitle">-</h3>
+          <button class="btn-ghost-sm" onclick="closeCalendarDay()">✕</button>
+        </div>
+        <div class="calendar-day-content" id="calendarDayContent"></div>
+        <div class="calendar-day-actions">
+          <button class="btn-primary" onclick="createNoteOnSelectedDate()">+ Catatan di Hari Ini</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TIMELINE MODE -->
+    <!-- ============================================================ -->
+    <div id="timelineMode" class="mode mode-timeline" style="display:none;">
+      <div class="timeline-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeTimeline()">Kembali</button>
+        <div class="timeline-title-group">
+          <h2>Timeline</h2>
+          <p>Jejak aktivitas Anda</p>
+        </div>
+        <div class="timeline-filters">
+          <select id="timelineTypeFilter" onchange="loadTimeline()">
+            <option value="all">Semua tipe</option>
+            <option value="note">Catatan</option>
+            <option value="task">Tugas</option>
+            <option value="version">Versi</option>
+          </select>
+          <input type="date" id="timelineFromDate" onchange="loadTimeline()">
+          <input type="date" id="timelineToDate" onchange="loadTimeline()">
+        </div>
+      </div>
+
+      <div class="heatmap-section">
+        <div class="heatmap-header">
+          <h4>Aktivitas <span id="heatmapYear">2026</span></h4>
+        </div>
+        <div class="heatmap-grid" id="heatmapGrid"></div>
+      </div>
+
+      <div class="timeline-list" id="timelineList"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- PROJECTS MODE -->
+    <!-- ============================================================ -->
+    <div id="projectsMode" class="mode mode-projects" style="display:none;">
+      <div class="projects-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeProjects()">Kembali</button>
+        <div class="projects-title-group">
+          <h2>Projects</h2>
+          <p>Kelola project dan progres Anda</p>
+        </div>
+        <div class="projects-header-actions">
+          <select id="projectStatusFilter" onchange="loadProjects()">
+            <option value="all">Semua status</option>
+            <option value="planning">Planning</option>
+            <option value="active">Active</option>
+            <option value="on_hold">On Hold</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <button class="btn-primary" onclick="showCreateProjectModal()">+ Project Baru</button>
+        </div>
+      </div>
+      <div class="projects-list" id="projectsList"></div>
+    </div>
+
+    <!-- PROJECT DETAIL MODE -->
+    <div id="projectDetailMode" class="mode mode-project-detail" style="display:none;">
+      <div class="project-detail-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeProjectDetail()">Kembali</button>
+        <div class="project-detail-title-group">
+          <div class="project-icon-large" id="projectDetailIcon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <div>
+            <h2 id="projectDetailName">-</h2>
+            <p id="projectDetailDesc">-</p>
+          </div>
+        </div>
+        <div class="project-detail-actions">
+          <button class="btn-ghost-sm" onclick="editCurrentProject()">Edit</button>
+          <button class="btn-ghost-sm" onclick="deleteCurrentProject()" style="color:var(--danger);">Hapus</button>
+        </div>
+      </div>
+      <div class="project-tabs">
+        <button class="project-tab active" data-tab="overview" onclick="switchProjectTab('overview')">Overview</button>
+        <button class="project-tab" data-tab="tasks" onclick="switchProjectTab('tasks')">Tugas</button>
+        <button class="project-tab" data-tab="notes" onclick="switchProjectTab('notes')">Catatan</button>
+        <button class="project-tab" data-tab="activity" onclick="switchProjectTab('activity')">Aktivitas</button>
+      </div>
+      <div class="project-panel" id="projectPanelOverview"></div>
+      <div class="project-panel" id="projectPanelTasks" style="display:none;"></div>
+      <div class="project-panel" id="projectPanelNotes" style="display:none;"></div>
+      <div class="project-panel" id="projectPanelActivity" style="display:none;"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- BOARDS (KANBAN) MODE -->
+    <!-- ============================================================ -->
+    <div id="boardsMode" class="mode mode-boards" style="display:none;">
+      <div class="boards-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeBoards()">Kembali</button>
+        <div class="boards-title-group">
+          <h2>Kanban Boards</h2>
+          <p>Kelola board dan kartu Anda</p>
+        </div>
+        <div class="projects-header-actions">
+          <button class="btn-primary" onclick="showCreateBoardModal()">+ Board Baru</button>
+        </div>
+      </div>
+      <div class="boards-list" id="boardsList"></div>
+    </div>
+
+    <!-- BOARD DETAIL MODE -->
+    <div id="boardDetailMode" class="mode mode-board-detail" style="display:none;">
+      <div class="board-detail-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeBoardDetail()">Kembali</button>
+        <div class="board-detail-title-group">
+          <h2 id="boardDetailName">-</h2>
+          <p id="boardDetailDesc">-</p>
+        </div>
+        <div class="board-detail-actions">
+          <button class="btn-ghost-sm" onclick="editCurrentBoard()">Edit</button>
+        </div>
+      </div>
+      <div class="board-canvas" id="boardCanvas"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MIND MAPS MODE -->
+    <!-- ============================================================ -->
+    <div id="mindmapsMode" class="mode mode-mindmaps" style="display:none;">
+      <div class="mindmaps-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeMindmaps()">Kembali</button>
+        <div class="mindmaps-title-group">
+          <h2>Mind Maps</h2>
+          <p>Visualisasikan ide Anda</p>
+        </div>
+        <div class="projects-header-actions">
+          <button class="btn-primary" onclick="showCreateMindMapModal()">+ Mind Map Baru</button>
+        </div>
+      </div>
+      <div class="mindmaps-list" id="mindmapsList"></div>
+    </div>
+
+    <!-- MIND MAP EDITOR MODE -->
+    <div id="mindmapEditorMode" class="mode mode-mindmap-editor" style="display:none;">
+      <div class="mindmap-editor-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeMindmapEditor()">Kembali</button>
+        <input type="text" class="mindmap-name-input" id="mindmapNameInput" placeholder="Nama mind map">
+        <div class="mindmap-editor-actions">
+          <button class="btn-ghost-sm" onclick="addMindMapNode()">+ Node</button>
+          <button class="btn-ghost-sm" onclick="deleteMindMapNode()">− Hapus</button>
+          <button class="btn-ghost-sm" onclick="autoLayoutMindMap()">Auto Layout</button>
+          <button class="btn-ghost-sm" onclick="exportMindMapSVG()">Export SVG</button>
+          <button class="btn-primary" id="mindmapSaveBtn" onclick="saveMindMap()">Simpan</button>
+        </div>
+      </div>
+      <div class="mindmap-canvas" id="mindmapCanvas">
+        <svg id="mindmapSvg"></svg>
+      </div>
+      <div class="mindmap-hint">
+        <span><kbd>Tab</kbd> tambah node · <kbd>Enter</kbd> edit node · <kbd>Del</kbd> hapus node · Drag node untuk reposisi</span>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- WHITEBOARDS MODE -->
+    <!-- ============================================================ -->
+    <div id="whiteboardsMode" class="mode mode-whiteboards" style="display:none;">
+      <div class="whiteboards-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeWhiteboards()">Kembali</button>
+        <div class="whiteboards-title-group">
+          <h2>Whiteboard</h2>
+          <p>Kanvas bebas untuk sketsa</p>
+        </div>
+        <div class="projects-header-actions">
+          <button class="btn-primary" onclick="showCreateWhiteboardModal()">+ Whiteboard Baru</button>
+        </div>
+      </div>
+      <div class="whiteboards-list" id="whiteboardsList"></div>
+    </div>
+
+    <!-- WHITEBOARD EDITOR MODE -->
+    <div id="whiteboardEditorMode" class="mode mode-whiteboard-editor" style="display:none;">
+      <div class="whiteboard-editor-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeWhiteboardEditor()">Kembali</button>
+        <input type="text" class="whiteboard-name-input" id="whiteboardNameInput" placeholder="Nama whiteboard">
+        <div class="whiteboard-toolbar">
+          <button class="wb-tool active" data-tool="select" title="Select">↖</button>
+          <button class="wb-tool" data-tool="pen" title="Pen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/></svg></button>
+          <button class="wb-tool" data-tool="rect" title="Rectangle">▭</button>
+          <button class="wb-tool" data-tool="circle" title="Circle">◯</button>
+          <button class="wb-tool" data-tool="arrow" title="Arrow">→</button>
+          <button class="wb-tool" data-tool="text" title="Text">T</button>
+          <button class="wb-tool" data-tool="sticky" title="Sticky"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l-1 6 3 3H7l3-3zM12 12v9"/></svg></button>
+          <div class="wb-divider"></div>
+          <input type="color" id="wbColorPicker" value="#18181b" title="Color">
+          <select id="wbStrokeSize" title="Stroke size">
+            <option value="2">Tipis</option>
+            <option value="4" selected>Sedang</option>
+            <option value="8">Tebal</option>
+            <option value="16">Sangat Tebal</option>
+          </select>
+          <div class="wb-divider"></div>
+          <button class="wb-tool" onclick="wbUndo()" title="Undo">↶</button>
+          <button class="wb-tool" onclick="wbRedo()" title="Redo">↷</button>
+          <button class="wb-tool" onclick="wbZoomOut()" title="Zoom Out">−</button>
+          <span class="wb-zoom-label" id="wbZoomLabel">100%</span>
+          <button class="wb-tool" onclick="wbZoomIn()" title="Zoom In">+</button>
+          <button class="wb-tool" onclick="wbZoomReset()" title="Reset">⌖</button>
+          <button class="wb-tool" onclick="wbClear()" title="Clear"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 7V4h4v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
+        </div>
+        <div class="whiteboard-editor-actions">
+          <button class="btn-primary" id="whiteboardSaveBtn" onclick="saveWhiteboard()">Simpan</button>
+        </div>
+      </div>
+      <canvas class="whiteboard-canvas" id="whiteboardCanvas"></canvas>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- WEB CLIPPER MODE -->
+    <!-- ============================================================ -->
+    <div id="clipperMode" class="mode mode-clipper" style="display:none;">
+      <div class="clipper-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeClipper()">Kembali</button>
+        <div class="clipper-title-group">
+          <h2>Web Clipper</h2>
+          <p>Simpan artikel & halaman web</p>
+        </div>
+        <div class="clipper-header-actions">
+          <button class="btn-primary" onclick="showClipURLModal()">+ Simpan URL</button>
+        </div>
+      </div>
+      <div class="clipper-tabs">
+        <button class="clipper-tab active" data-tab="clips" onclick="switchClipperTab('clips')">Clips</button>
+        <button class="clipper-tab" data-tab="reading" onclick="switchClipperTab('reading')">Reading List</button>
+        <button class="clipper-tab" data-tab="highlights" onclick="switchClipperTab('highlights')">Highlights</button>
+      </div>
+      <div class="clipper-panel" id="clipperPanelClips"></div>
+      <div class="clipper-panel" id="clipperPanelReading" style="display:none;grid-template-columns:1fr;"></div>
+      <div class="clipper-panel" id="clipperPanelHighlights" style="display:none;grid-template-columns:1fr;"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- RESEARCH MODE -->
+    <!-- ============================================================ -->
+    <div id="researchMode" class="mode mode-research" style="display:none;">
+      <div class="research-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeResearch()">Kembali</button>
+        <div class="research-title-group">
+          <h2>Research Sources</h2>
+          <p>Kelola sumber referensi</p>
+        </div>
+        <div class="clipper-header-actions">
+          <button class="btn-primary" onclick="showCreateSourceModal()">+ Sumber Baru</button>
+        </div>
+      </div>
+      <div class="sources-list" id="sourcesList"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MEDIA LIBRARY MODE -->
+    <!-- ============================================================ -->
+    <div id="mediaMode" class="mode mode-media" style="display:none;">
+      <div class="media-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeMedia()">Kembali</button>
+        <div class="media-title-group">
+          <h2>Media Library</h2>
+          <p>Semua file & media Anda</p>
+        </div>
+        <div class="media-header-actions">
+          <input type="text" id="mediaSearchInput" placeholder="Cari media..." oninput="debouncedMediaSearch()">
+          <button class="btn-ghost-sm" onclick="syncMediaLibrary()" title="Scan attachment lama yang belum terdaftar">Sync</button>
+        </div>
+      </div>
+      <div class="media-tabs">
+        <button class="media-tab active" data-type="all" onclick="switchMediaTab('all')">Semua</button>
+        <button class="media-tab" data-type="image" onclick="switchMediaTab('image')">Gambar</button>
+        <button class="media-tab" data-type="video" onclick="switchMediaTab('video')">Video</button>
+        <button class="media-tab" data-type="audio" onclick="switchMediaTab('audio')">Audio</button>
+        <button class="media-tab" data-type="pdf" onclick="switchMediaTab('pdf')">PDF</button>
+        <button class="media-tab" data-type="document" onclick="switchMediaTab('document')">Dokumen</button>
+      </div>
+      <div class="media-stats" id="mediaStats"></div>
+      <div class="media-grid" id="mediaGrid"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- DASHBOARD MODE -->
+    <!-- ============================================================ -->
+    <div id="dashboardMode" class="mode mode-dashboard" style="display:none;">
+      <div class="dashboard-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeDashboard()">Kembali</button>
+        <div class="dashboard-title-group">
+          <h2>Beranda</h2>
+          <p>Ringkasan semua aktivitas Anda</p>
+        </div>
+        <div class="clipper-header-actions">
+          <button class="btn-ghost-sm" onclick="exportNotesDialog()">Ekspor</button>
+        </div>
+      </div>
+      <div class="dashboard-content" id="dashboardContent"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- PRODUCTIVITY MODE -->
+    <!-- ============================================================ -->
+    <div id="productivityMode" class="mode mode-productivity" style="display:none;">
+      <div class="productivity-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeProductivity()">Kembali</button>
+        <div class="productivity-title-group">
+          <h2>Productivity</h2>
+          <p>Pomodoro, planner, habits & goals</p>
+        </div>
+      </div>
+      <div class="productivity-tabs">
+        <button class="prod-tab active" data-tab="pomodoro" onclick="switchProductivityTab('pomodoro')">Pomodoro</button>
+        <button class="prod-tab" data-tab="planner" onclick="switchProductivityTab('planner')">Daily Planner</button>
+        <button class="prod-tab" data-tab="habits" onclick="switchProductivityTab('habits')">Habits</button>
+        <button class="prod-tab" data-tab="goals" onclick="switchProductivityTab('goals')">Goals</button>
+      </div>
+      <div class="productivity-panel" id="prodPanelPomodoro"></div>
+      <div class="productivity-panel" id="prodPanelPlanner" style="display:none;"></div>
+      <div class="productivity-panel" id="prodPanelHabits" style="display:none;"></div>
+      <div class="productivity-panel" id="prodPanelGoals" style="display:none;"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- DATA MANAGEMENT MODE -->
+    <!-- ============================================================ -->
+    <div id="datamanageMode" class="mode mode-datamanage" style="display:none;">
+      <div class="datamanage-header">
+        <button class="btn-ghost-sm editor-back" onclick="closeDatamanage()">Kembali</button>
+        <div class="datamanage-title-group">
+          <h2>Data Management</h2>
+          <p>Kelola storage, duplikat & import/export</p>
+        </div>
+      </div>
+      <div class="datamanage-tabs">
+        <button class="dm-tab active" data-tab="storage" onclick="switchDmTab('storage')">Storage</button>
+        <button class="dm-tab" data-tab="duplicates" onclick="switchDmTab('duplicates')">Duplikat</button>
+        <button class="dm-tab" data-tab="importexport" onclick="switchDmTab('importexport')">Import/Export</button>
+      </div>
+      <div class="datamanage-panel" id="dmPanelStorage"></div>
+      <div class="datamanage-panel" id="dmPanelDuplicates" style="display:none;"></div>
+      <div class="datamanage-panel" id="dmPanelImportexport" style="display:none;"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ============================================================
+     MODALS
+     ============================================================ -->
+
+<!-- Preview Modal -->
+<div id="previewModal" class="modal preview-modal" style="display:none;">
+  <div class="preview-content">
+    <div class="preview-header">
+      <div class="preview-info">
+        <span class="preview-filename" id="previewFilename">-</span>
+        <span class="preview-meta" id="previewMeta">-</span>
+      </div>
+      <div class="preview-actions">
+        <button class="btn-ghost-sm" onclick="downloadCurrentAttachment()">Download</button>
+        <button class="btn-ghost-sm" onclick="renameCurrentAttachment()">Rename</button>
+        <button class="btn-ghost-sm" onclick="deleteCurrentAttachment()" style="color: var(--danger);">Hapus</button>
+        <button class="btn-ghost-sm preview-close" onclick="closePreviewModal()">✕</button>
+      </div>
+    </div>
+    <div class="preview-body" id="previewBody"></div>
+  </div>
+</div>
+
+<!-- Advanced Search Modal -->
+<div id="searchModal" class="modal" style="display:none;">
+  <div class="modal-content search-modal-content">
+    <div class="modal-header">
+      <h3>Pencarian Lanjutan</h3>
+      <button class="btn-ghost-sm" onclick="closeSearchModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <div class="search-field">
+        <label>Kata kunci</label>
+        <input id="advKeyword" placeholder="Judul, isi, atau nama file...">
+      </div>
+
+      <div class="search-row">
+        <div class="search-field">
+          <label>Dari tanggal</label>
+          <input id="advDateFrom" type="date">
+        </div>
+        <div class="search-field">
+          <label>Sampai tanggal</label>
+          <input id="advDateTo" type="date">
+        </div>
+      </div>
+
+      <div class="search-row">
+        <div class="search-field">
+          <label>Folder</label>
+          <select id="advNotebook">
+            <option value="">Semua folder</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Tag</label>
+          <select id="advTag">
+            <option value="">Semua tag</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-row">
+        <div class="search-field">
+          <label>Status</label>
+          <select id="advFilter">
+            <option value="all">Semua</option>
+            <option value="pinned">Pinned</option>
+            <option value="favorites">Favorit</option>
+            <option value="archived">Arsip</option>
+            <option value="trash">Sampah</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Urutkan</label>
+          <select id="advSort">
+            <option value="updated">Terakhir diubah</option>
+            <option value="created">Terbaru dibuat</option>
+            <option value="title">Judul (A-Z)</option>
+            <option value="relevance">Relevansi</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-row">
+        <div class="search-field">
+          <label>Punya checklist</label>
+          <select id="advChecklist">
+            <option value="">Semua</option>
+            <option value="true">Ya</option>
+            <option value="false">Tidak</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Punya lampiran</label>
+          <select id="advAttachment">
+            <option value="">Semua</option>
+            <option value="true">Ya</option>
+            <option value="false">Tidak</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-presets">
+        <div class="search-presets-header">
+          <span>Preset tersimpan</span>
+          <button class="btn-ghost-sm" onclick="showSavePresetDialog()">+ Simpan</button>
+        </div>
+        <div id="presetList" class="preset-list"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="resetAdvancedSearch()">Reset</button>
+      <button class="btn-primary" onclick="applyAdvancedSearch()">Cari</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save Preset Dialog -->
+<div id="presetDialog" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 400px;">
+    <div class="modal-header">
+      <h3>Simpan Preset</h3>
+      <button class="btn-ghost-sm" onclick="closePresetDialog()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <div class="search-field">
+        <label>Nama preset</label>
+        <input id="presetName" placeholder="Contoh: Tugas minggu ini">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closePresetDialog()">Batal</button>
+      <button class="btn-primary" onclick="saveCurrentPreset()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Template Picker Modal -->
+<div id="templateModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 800px;">
+    <div class="modal-header">
+      <h3>Pilih Template</h3>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-ghost-sm" onclick="openSaveTemplateModal()">+ Baru</button>
+        <button class="btn-ghost-sm" onclick="closeTemplateModal()">✕</button>
+      </div>
+    </div>
+
+    <div class="template-toolbar">
+      <input id="tplSearchInput" placeholder="Cari template..." oninput="debouncedTemplateSearch()">
+      <div id="tplCategories" class="template-categories"></div>
+    </div>
+
+    <div id="templateList" class="template-list"></div>
+  </div>
+</div>
+
+<!-- Save as Template Modal -->
+<div id="saveTemplateModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 480px;">
+    <div class="modal-header">
+      <h3>Simpan sebagai Template</h3>
+      <button class="btn-ghost-sm" onclick="closeSaveTemplateModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <div class="search-field">
+        <label>Nama template *</label>
+        <input id="tplName" placeholder="Contoh: Meeting Notes Tim Marketing">
+      </div>
+      <div class="search-field">
+        <label>Deskripsi</label>
+        <input id="tplDesc" placeholder="Deskripsi singkat">
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <label>Kategori</label>
+          <select id="tplCategory">
+            <option value="general">Umum</option>
+            <option value="work">Kerja</option>
+            <option value="personal">Pribadi</option>
+            <option value="research">Riset</option>
+            <option value="project">Proyek</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Tags (pisah koma)</label>
+          <input id="tplTags" placeholder="work,meeting">
+        </div>
+      </div>
+      <div class="search-field">
+        <label>Warna</label>
+        <div class="accent-picker" id="tplColorPicker">
+          <div class="accent-dot active" data-color="#18181b" style="background:#18181b"></div>
+          <div class="accent-dot" data-color="#6366f1" style="background:#6366f1"></div>
+          <div class="accent-dot" data-color="#16a34a" style="background:#16a34a"></div>
+          <div class="accent-dot" data-color="#dc2626" style="background:#dc2626"></div>
+          <div class="accent-dot" data-color="#f59e0b" style="background:#f59e0b"></div>
+          <div class="accent-dot" data-color="#0ea5e9" style="background:#0ea5e9"></div>
+          <div class="accent-dot" data-color="#8b5cf6" style="background:#8b5cf6"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeSaveTemplateModal()">Batal</button>
+      <button class="btn-primary" onclick="saveAsTemplate()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create/Edit Task Modal -->
+<div id="createTaskModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3 id="taskModalTitle">Tugas Baru</h3>
+      <button class="btn-ghost-sm" onclick="closeCreateTaskModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <input type="hidden" id="taskModalId">
+
+      <div class="search-field">
+        <label>Judul tugas *</label>
+        <input id="taskModalTitleInput" placeholder="Contoh: Selesaikan laporan Q4">
+      </div>
+
+      <div class="search-field">
+        <label>Deskripsi</label>
+        <textarea id="taskModalDesc" placeholder="Detail tugas (opsional)" rows="3" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;resize:vertical;"></textarea>
+      </div>
+
+      <div class="search-row">
+        <div class="search-field">
+          <label>Prioritas</label>
+          <select id="taskModalPriority">
+            <option value="low">Rendah</option>
+            <option value="medium" selected>Sedang</option>
+            <option value="high">Tinggi</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Status</label>
+          <select id="taskModalStatus">
+            <option value="pending" selected>Pending</option>
+            <option value="in_progress">Sedang dikerjakan</option>
+            <option value="done">Selesai</option>
+            <option value="cancelled">Dibatalkan</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-row">
+        <div class="search-field">
+          <label>Jatuh tempo</label>
+          <input id="taskModalDue" type="datetime-local">
+        </div>
+        <div class="search-field">
+          <label>Pengingat</label>
+          <input id="taskModalReminder" type="datetime-local">
+        </div>
+      </div>
+
+      <div class="search-field">
+        <label>Folder (opsional)</label>
+        <select id="taskModalNotebook">
+          <option value="">Tanpa folder</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeCreateTaskModal()">Batal</button>
+      <button class="btn-primary" onclick="saveTaskFromModal()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Project Modal -->
+<div id="projectModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3 id="projectModalTitle">Project Baru</h3>
+      <button class="btn-ghost-sm" onclick="closeProjectModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <input type="hidden" id="projectModalId">
+      <div class="search-field">
+        <label>Nama project *</label>
+        <input id="projectModalName" placeholder="Contoh: Website Redesign">
+      </div>
+      <div class="search-field">
+        <label>Deskripsi</label>
+        <textarea id="projectModalDesc" rows="3" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;resize:vertical;"></textarea>
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <label>Mulai</label>
+          <input id="projectModalStart" type="date">
+        </div>
+        <div class="search-field">
+          <label>Target Selesai</label>
+          <input id="projectModalDue" type="date">
+        </div>
+      </div>
+      <div class="search-field">
+        <label>Warna</label>
+        <div class="accent-picker" id="projectColorPicker">
+          <div class="accent-dot active" data-color="#6366f1" style="background:#6366f1"></div>
+          <div class="accent-dot" data-color="#16a34a" style="background:#16a34a"></div>
+          <div class="accent-dot" data-color="#dc2626" style="background:#dc2626"></div>
+          <div class="accent-dot" data-color="#f59e0b" style="background:#f59e0b"></div>
+          <div class="accent-dot" data-color="#0ea5e9" style="background:#0ea5e9"></div>
+          <div class="accent-dot" data-color="#8b5cf6" style="background:#8b5cf6"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeProjectModal()">Batal</button>
+      <button class="btn-primary" onclick="saveProject()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Board Modal -->
+<div id="boardModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 480px;">
+    <div class="modal-header">
+      <h3 id="boardModalTitle">Board Baru</h3>
+      <button class="btn-ghost-sm" onclick="closeBoardModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <input type="hidden" id="boardModalId">
+      <div class="search-field">
+        <label>Nama board *</label>
+        <input id="boardModalName" placeholder="Contoh: Sprint 1">
+      </div>
+      <div class="search-field">
+        <label>Deskripsi</label>
+        <input id="boardModalDesc" placeholder="Deskripsi singkat">
+      </div>
+      <div class="search-field">
+        <label>Project (opsional)</label>
+        <select id="boardModalProject">
+          <option value="">— Tidak ada —</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeBoardModal()">Batal</button>
+      <button class="btn-primary" onclick="saveBoard()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Column Modal -->
+<div id="columnModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 400px;">
+    <div class="modal-header">
+      <h3>Kolom Baru</h3>
+      <button class="btn-ghost-sm" onclick="closeColumnModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <div class="search-field">
+        <label>Nama kolom *</label>
+        <input id="columnModalName" placeholder="Contoh: To Do">
+      </div>
+      <div class="search-field">
+        <label>Warna</label>
+        <div class="accent-picker" id="columnColorPicker">
+          <div class="accent-dot active" data-color="#6366f1" style="background:#6366f1"></div>
+          <div class="accent-dot" data-color="#f59e0b" style="background:#f59e0b"></div>
+          <div class="accent-dot" data-color="#16a34a" style="background:#16a34a"></div>
+          <div class="accent-dot" data-color="#dc2626" style="background:#dc2626"></div>
+          <div class="accent-dot" data-color="#0ea5e9" style="background:#0ea5e9"></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeColumnModal()">Batal</button>
+      <button class="btn-primary" onclick="saveColumn()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Card Modal -->
+<div id="cardModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 480px;">
+    <div class="modal-header">
+      <h3 id="cardModalTitle">Card Baru</h3>
+      <button class="btn-ghost-sm" onclick="closeCardModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <input type="hidden" id="cardModalId">
+      <input type="hidden" id="cardModalColumnId">
+      <div class="search-field">
+        <label>Judul card *</label>
+        <input id="cardModalCardTitle" placeholder="Judul card">
+      </div>
+      <div class="search-field">
+        <label>Deskripsi</label>
+        <textarea id="cardModalCardDesc" rows="3" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;resize:vertical;"></textarea>
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <label>Prioritas</label>
+          <select id="cardModalPriority">
+            <option value="low">Rendah</option>
+            <option value="medium" selected>Sedang</option>
+            <option value="high">Tinggi</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Due date</label>
+          <input id="cardModalDue" type="datetime-local">
+        </div>
+      </div>
+      <div class="search-field">
+        <label>Labels (pisah koma)</label>
+        <input id="cardModalLabels" placeholder="design,urgent">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeCardModal()">Batal</button>
+      <button class="btn-primary" onclick="saveCard()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Mind Map Modal -->
+<div id="createMindMapModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 440px;">
+    <div class="modal-header">
+      <h3>Mind Map Baru</h3>
+      <button class="btn-ghost-sm" onclick="closeCreateMindMapModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <div class="search-field">
+        <label>Nama mind map *</label>
+        <input id="createMindMapName" placeholder="Contoh: Rencana Project">
+      </div>
+      <div class="search-field">
+        <label>Generate dari catatan (opsional)</label>
+        <select id="createMindMapNote">
+          <option value="">— Kosong —</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeCreateMindMapModal()">Batal</button>
+      <button class="btn-primary" onclick="saveCreateMindMap()">Buat</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Whiteboard Modal -->
+<div id="createWhiteboardModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 440px;">
+    <div class="modal-header">
+      <h3>Whiteboard Baru</h3>
+      <button class="btn-ghost-sm" onclick="closeCreateWhiteboardModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <div class="search-field">
+        <label>Nama whiteboard *</label>
+        <input id="createWhiteboardName" placeholder="Contoh: Sketsa Ide">
+      </div>
+      <div class="search-field">
+        <label>Project (opsional)</label>
+        <select id="createWhiteboardProject">
+          <option value="">— Tidak ada —</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeCreateWhiteboardModal()">Batal</button>
+      <button class="btn-primary" onclick="saveCreateWhiteboard()">Buat</button>
+    </div>
+  </div>
+</div>
+
+<!-- Clip URL Modal -->
+<div id="clipURLModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3>Simpan URL</h3>
+      <button class="btn-ghost-sm" onclick="closeClipURLModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <div class="search-field">
+        <label>URL *</label>
+        <input id="clipURLInput" type="url" placeholder="https://example.com/article">
+      </div>
+      <div class="search-field">
+        <label>Judul (opsional)</label>
+        <input id="clipURLTitle" placeholder="Judul artikel">
+      </div>
+      <div class="search-field">
+        <label>Konten / catatan (opsional)</label>
+        <textarea id="clipURLContent" rows="4" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;resize:vertical;"></textarea>
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <label>Tipe</label>
+          <select id="clipURLType">
+            <option value="article">Artikel</option>
+            <option value="video">Video</option>
+            <option value="product">Produk</option>
+            <option value="tweet">Tweet</option>
+            <option value="other">Lainnya</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Buat catatan?</label>
+          <select id="clipURLCreateNote">
+            <option value="true" selected>Ya</option>
+            <option value="false">Tidak</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeClipURLModal()">Batal</button>
+      <button class="btn-primary" onclick="submitClipURL()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Source Modal -->
+<div id="sourceModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 560px;">
+    <div class="modal-header">
+      <h3 id="sourceModalTitle">Sumber Baru</h3>
+      <button class="btn-ghost-sm" onclick="closeSourceModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <input type="hidden" id="sourceModalId">
+      <div class="search-field">
+        <label>Judul *</label>
+        <input id="sourceTitle" placeholder="Judul referensi">
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <label>Penulis</label>
+          <input id="sourceAuthor" placeholder="Nama penulis">
+        </div>
+        <div class="search-field">
+          <label>Tahun</label>
+          <input id="sourceYear" placeholder="2024">
+        </div>
+      </div>
+      <div class="search-field">
+        <label>URL</label>
+        <input id="sourceURL" type="url" placeholder="https://...">
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <label>Penerbit</label>
+          <input id="sourcePublisher" placeholder="Publisher">
+        </div>
+        <div class="search-field">
+          <label>Publikasi</label>
+          <input id="sourcePublication" placeholder="Journal, Website">
+        </div>
+      </div>
+      <div class="search-row">
+        <div class="search-field">
+          <label>Tipe</label>
+          <select id="sourceType">
+            <option value="website">Website</option>
+            <option value="book">Buku</option>
+            <option value="article">Artikel</option>
+            <option value="journal">Jurnal</option>
+            <option value="thesis">Thesis</option>
+            <option value="other">Lainnya</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label>Format sitasi</label>
+          <select id="sourceCitationFormat">
+            <option value="apa">APA</option>
+            <option value="mla">MLA</option>
+            <option value="chicago">Chicago</option>
+          </select>
+        </div>
+      </div>
+      <div class="search-field">
+        <label>Tags (pisah koma)</label>
+        <input id="sourceTags" placeholder="research,ai">
+      </div>
+      <div class="search-field">
+        <label>Catatan</label>
+        <textarea id="sourceNotes" rows="3" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;resize:vertical;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeSourceModal()">Batal</button>
+      <button class="btn-primary" onclick="saveSource()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Source Detail Modal -->
+<div id="sourceDetailModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h3 id="sourceDetailTitle">Detail Sumber</h3>
+      <button class="btn-ghost-sm" onclick="closeSourceDetail()">✕</button>
+    </div>
+    <div class="search-modal-body" id="sourceDetailBody"></div>
+  </div>
+</div>
+
+<!-- Create Note On Date Modal -->
+<div id="createNoteOnDateModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 480px;">
+    <div class="modal-header">
+      <h3>Catatan Baru — <span id="createNoteDateLabel"></span></h3>
+      <button class="btn-ghost-sm" onclick="closeCreateNoteOnDate()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <input type="hidden" id="createNoteDateInput">
+      <div class="search-field">
+        <label>Judul</label>
+        <input id="createNoteTitleInput" placeholder="Judul catatan">
+      </div>
+      <div class="search-field">
+        <label>Isi *</label>
+        <textarea id="createNoteContentInput" rows="5" style="width:100%;padding:11px 14px;background:var(--bg-app);border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:14px;resize:vertical;min-height:120px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeCreateNoteOnDate()">Batal</button>
+      <button class="btn-primary" onclick="submitCreateNoteOnDate()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export Notes Modal -->
+<div id="exportNotesModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 420px;">
+    <div class="modal-header">
+      <h3>Export Catatan</h3>
+      <button class="btn-ghost-sm" onclick="closeExportNotesModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <div class="search-field">
+        <label>Format</label>
+        <select id="exportFormat">
+          <option value="json">JSON</option>
+          <option value="markdown">Markdown</option>
+          <option value="html">HTML</option>
+        </select>
+      </div>
+      <div class="search-field">
+        <label>Filter</label>
+        <select id="exportFilter">
+          <option value="all">Semua catatan</option>
+          <option value="pinned">Pinned</option>
+          <option value="favorites">Favorit</option>
+          <option value="archived">Arsip</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeExportNotesModal()">Batal</button>
+      <button class="btn-primary" onclick="doExportNotes()">Ekspor</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Notes Modal -->
+<div id="importNotesModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 560px;">
+    <div class="modal-header">
+      <h3>Import dari JSON</h3>
+      <button class="btn-ghost-sm" onclick="closeImportNotesModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <div class="search-field">
+        <label>Pilih file JSON</label>
+        <input type="file" id="importFileInput" accept=".json">
+      </div>
+      <div class="search-field">
+        <label>Atau paste JSON</label>
+        <textarea id="importJSONText" rows="10" style="width:100%;padding:11px 14px;background:var(--bg-app);border:1px solid var(--border);border-radius:var(--radius);font-family:monospace;font-size:12.5px;resize:vertical;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeImportNotesModal()">Batal</button>
+      <button class="btn-primary" onclick="doImportNotes()">Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- Timeline Detail Modal -->
+<div id="timelineDetailModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3 id="timelineDetailTitle">Riwayat</h3>
+      <button class="btn-ghost-sm" onclick="closeTimelineDetail()">✕</button>
+    </div>
+    <div class="timeline-detail-content" id="timelineDetailContent"></div>
+  </div>
+</div>
+
+<!-- Notification Panel -->
+<div id="notifPanel" class="notif-panel" style="display:none;">
+  <div class="notif-panel-overlay" onclick="closeNotificationPanel()"></div>
+  <div class="notif-panel-content">
+    <div class="notif-header">
+      <h3>Notifikasi</h3>
+      <div>
+        <button class="btn-ghost-sm" onclick="markAllNotificationsRead()">Tandai dibaca</button>
+        <button class="btn-ghost-sm" onclick="clearAllNotifications()">Bersihkan</button>
+        <button class="btn-ghost-sm" onclick="closeNotificationPanel()">✕</button>
+      </div>
+    </div>
+    <div id="notifList" class="notif-list"></div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div id="shareModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3>Bagikan</h3>
+      <button class="btn-ghost-sm" onclick="closeShareModal()">✕</button>
+    </div>
+    <div class="search-modal-body">
+      <div class="share-tabs">
+        <button class="share-tab active" data-tab="link" onclick="switchShareTab('link')">Link</button>
+        <button class="share-tab" data-tab="user" onclick="switchShareTab('user')">Ke User</button>
+      </div>
+
+      <div id="shareTabLink">
+        <div class="search-field">
+          <label>Mode link</label>
+          <select id="shareLinkMode">
+            <option value="public">Public — siapa saja dengan link</option>
+            <option value="private">Private — hanya user terdaftar</option>
+          </select>
+        </div>
+
+        <div class="search-field">
+          <label>Permission</label>
+          <select id="shareLinkPermission">
+            <option value="viewer">Viewer — hanya bisa lihat</option>
+            <option value="editor">Editor — bisa mengedit</option>
+          </select>
+        </div>
+
+        <div class="search-field">
+          <label>Password (opsional)</label>
+          <input id="shareLinkPassword" type="text" placeholder="Kosongkan jika tanpa password">
+        </div>
+
+        <div class="search-field">
+          <label>Kadaluarsa (opsional)</label>
+          <input id="shareLinkExpires" type="date">
+        </div>
+
+        <button class="btn-primary" style="width:100%;" onclick="createShareLink()">Buat Link</button>
+      </div>
+
+      <div id="shareTabUser" style="display:none;">
+        <div class="search-field">
+          <label>Cari username</label>
+          <input id="shareUserSearch" placeholder="ketik username..." oninput="debouncedUserSearch()">
+          <div id="shareUserResults" class="share-user-results"></div>
+        </div>
+
+        <div class="search-field">
+          <label>Permission</label>
+          <select id="shareUserPermission">
+            <option value="viewer">Viewer</option>
+            <option value="editor">Editor</option>
+          </select>
+        </div>
+
+        <button class="btn-primary" style="width:100%;" onclick="shareToUser()">Bagikan</button>
+      </div>
+
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <strong style="font-size:12px;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-muted);">Share Aktif</strong>
+        </div>
+        <div id="shareListExisting"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Graph View Modal -->
+<div id="graphModal" class="modal graph-modal" style="display:none;">
+  <div class="graph-content">
+    <div class="graph-header">
+      <h3>Graph View</h3>
+      <button class="btn-ghost-sm" onclick="closeGraphView()">✕</button>
+    </div>
+    <canvas id="graphCanvas" class="graph-canvas"></canvas>
+  </div>
+</div>
+
+<!-- Activity Log Modal -->
+<div id="activityModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h3>Log Aktivitas</h3>
+      <button class="btn-ghost-sm" onclick="closeActivityLog()">✕</button>
+    </div>
+    <div id="activityList" class="activity-list"></div>
+  </div>
+</div>
+
+<!-- Admin Panel Modal -->
+<div id="adminModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 900px;">
+    <div class="modal-header">
+      <h3>Admin Panel</h3>
+      <button class="btn-ghost-sm" onclick="closeAdminPanel()">✕</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('users')">User Management</button>
+    </div>
+    <div id="adminUsersList" class="admin-users-list"></div>
+  </div>
+</div>
+
+<!-- Shared With Me Modal -->
+<div id="sharedModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h3>Dibagikan ke Saya</h3>
+      <button class="btn-ghost-sm" onclick="closeSharedWithMe()">✕</button>
+    </div>
+    <div id="sharedList" class="shared-list"></div>
+  </div>
+</div>
+
+<!-- Slash Command Menu -->
+<div id="slashMenu" class="slash-menu" style="display:none;">
+  <div class="slash-menu-header">Format</div>
+  <div class="slash-menu-items">
+    <div class="slash-item" data-action="h1"><span class="slash-icon">H1</span><div><div class="slash-title">Heading 1</div><div class="slash-desc">Judul besar</div></div></div>
+    <div class="slash-item" data-action="h2"><span class="slash-icon">H2</span><div><div class="slash-title">Heading 2</div><div class="slash-desc">Sub judul</div></div></div>
+    <div class="slash-item" data-action="h3"><span class="slash-icon">H3</span><div><div class="slash-title">Heading 3</div><div class="slash-desc">Sub sub judul</div></div></div>
+    <div class="slash-item" data-action="bullet"><span class="slash-icon">•</span><div><div class="slash-title">Bullet List</div><div class="slash-desc">Daftar poin</div></div></div>
+    <div class="slash-item" data-action="number"><span class="slash-icon">1.</span><div><div class="slash-title">Numbered List</div><div class="slash-desc">Daftar bernomor</div></div></div>
+    <div class="slash-item" data-action="check"><span class="slash-icon">☐</span><div><div class="slash-title">Checklist</div><div class="slash-desc">Daftar tugas</div></div></div>
+    <div class="slash-item" data-action="quote"><span class="slash-icon">"</span><div><div class="slash-title">Quote</div><div class="slash-desc">Kutipan</div></div></div>
+    <div class="slash-item" data-action="code"><span class="slash-icon">&lt;/&gt;</span><div><div class="slash-title">Code Block</div><div class="slash-desc">Blok kode</div></div></div>
+    <div class="slash-item" data-action="table"><span class="slash-icon">⊞</span><div><div class="slash-title">Table</div><div class="slash-desc">Insert tabel</div></div></div>
+    <div class="slash-item" data-action="hr"><span class="slash-icon">―</span><div><div class="slash-title">Horizontal Line</div><div class="slash-desc">Garis pemisah</div></div></div>
+    <div class="slash-item" data-action="image"><span class="slash-icon">IMG</span><div><div class="slash-title">Image</div><div class="slash-desc">Upload gambar</div></div></div>
+    <div class="slash-item" data-action="callout"><span class="slash-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg></span><div><div class="slash-title">Callout</div><div class="slash-desc">Kotak info/warning/tip</div></div></div>
+    <div class="slash-item" data-action="toggle"><span class="slash-icon">▸</span><div><div class="slash-title">Toggle Section</div><div class="slash-desc">Section collapsible</div></div></div>
+    <div class="slash-item" data-action="columns"><span class="slash-icon">☰</span><div><div class="slash-title">Columns</div><div class="slash-desc">Layout multi kolom</div></div></div>
+    <div class="slash-item" data-action="math"><span class="slash-icon">∑</span><div><div class="slash-title">Equation</div><div class="slash-desc">Rumus matematika</div></div></div>
+    <div class="slash-item" data-action="mermaid"><span class="slash-icon">◇</span><div><div class="slash-title">Mermaid Diagram</div><div class="slash-desc">Flowchart, sequence, gantt</div></div></div>
+    <div class="slash-item" data-action="toc"><span class="slash-icon">≡</span><div><div class="slash-title">Table of Contents</div><div class="slash-desc">Daftar isi otomatis</div></div></div>
+    <div class="slash-item" data-action="footnote"><span class="slash-icon">#</span><div><div class="slash-title">Footnote</div><div class="slash-desc">Catatan kaki</div></div></div>
+    <div class="slash-item" data-action="bookmark"><span class="slash-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></span><div><div class="slash-title">Bookmark</div><div class="slash-desc">Link preview card</div></div></div>
+    <div class="slash-item" data-action="embed"><span class="slash-icon">⧉</span><div><div class="slash-title">Embed</div><div class="slash-desc">YouTube, Twitter, dll</div></div></div>
+    <div class="slash-section-label">Asisten AI</div>
+    <div class="slash-item" data-action="ai"><span class="slash-icon">✦</span><div><div class="slash-title">Asisten AI</div><div class="slash-desc">Perbaiki, terjemahkan, buat judul</div></div></div>
+    <div class="slash-item" data-action="ai_summarize"><span class="slash-icon">✦</span><div><div class="slash-title">Ringkas catatan</div><div class="slash-desc">Rangkum jadi poin utama</div></div></div>
+    <div class="slash-item" data-action="ai_continue"><span class="slash-icon">✦</span><div><div class="slash-title">Lanjutkan menulis</div><div class="slash-desc">AI meneruskan tulisanmu</div></div></div>
+  </div>
+</div>
+
+<!-- Notification Permission Banner -->
+<div id="notifPermissionBanner" class="notif-permission-banner" style="display:none;">
+  <div>
+    <strong>Aktifkan notifikasi browser</strong>
+    <p>Dapatkan pengingat tugas & catatan tepat waktu.</p>
+  </div>
+  <div class="notif-permission-actions">
+    <button class="btn-ghost-sm" onclick="dismissNotifPermission()">Nanti</button>
+    <button class="btn-primary" onclick="requestNotifPermission()">Aktifkan</button>
+  </div>
+</div>
+
+<!-- Command Palette -->
+<div id="commandPalette" class="command-palette" style="display:none;">
+  <div class="command-overlay" onclick="closeCommandPalette()"></div>
+  <div class="command-content">
+    <div class="command-search-wrapper">
+      <span class="command-icon">⌘</span>
+      <input id="commandInput" type="text" placeholder="Ketik perintah atau cari..." autocomplete="off">
+      <kbd class="command-esc">Esc</kbd>
+    </div>
+    <div id="commandResults" class="command-results"></div>
+    <div class="command-footer">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigasi</span>
+      <span><kbd>Enter</kbd> pilih</span>
+      <span><kbd>Esc</kbd> tutup</span>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Capture Modal -->
+<div id="quickCaptureModal" class="modal" style="display:none;">
+  <div class="modal-content quick-capture-content">
+    <div class="modal-header">
+      <h3 id="quickCaptureTitle">Quick Capture</h3>
+      <button class="btn-ghost-sm" onclick="closeQuickCapture()">✕</button>
+    </div>
+
+    <div class="quick-tabs">
+      <button class="quick-tab active" data-type="note" onclick="switchQuickTab('note')">Catatan</button>
+      <button class="quick-tab" data-type="task" onclick="switchQuickTab('task')">Tugas</button>
+      <button class="quick-tab" data-type="reminder" onclick="switchQuickTab('reminder')">Pengingat</button>
+    </div>
+
+    <div class="search-modal-body">
+      <div id="quickNoteForm">
+        <div class="search-field">
+          <label>Judul (opsional)</label>
+          <input id="quickNoteTitle" placeholder="Auto-generate dari isi jika kosong" maxlength="200">
+        </div>
+        <div class="search-field">
+          <label>Isi catatan *</label>
+          <textarea id="quickNoteContent" placeholder="Tulis apa saja..." rows="6" style="width:100%;padding:11px 14px;background:var(--bg-app);border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:14px;resize:vertical;min-height:120px;"></textarea>
+        </div>
+      </div>
+
+      <div id="quickTaskForm" style="display:none;">
+        <div class="search-field">
+          <label>Judul tugas *</label>
+          <input id="quickTaskTitle" placeholder="Contoh: Beli susu" maxlength="500">
+        </div>
+        <div class="search-row">
+          <div class="search-field">
+            <label>Prioritas</label>
+            <select id="quickTaskPriority">
+              <option value="low">Rendah</option>
+              <option value="medium" selected>Sedang</option>
+              <option value="high">Tinggi</option>
+              <option value="urgent">Urgent</option>
+            </select>
+          </div>
+          <div class="search-field">
+            <label>Jatuh tempo (opsional)</label>
+            <input id="quickTaskDue" type="datetime-local">
+          </div>
+        </div>
+      </div>
+
+      <div id="quickReminderForm" style="display:none;">
+        <div class="search-field">
+          <label>Judul pengingat *</label>
+          <input id="quickReminderTitle" placeholder="Contoh: Telepon ibu" maxlength="500">
+        </div>
+        <div class="search-field">
+          <label>Waktu pengingat *</label>
+          <input id="quickReminderAt" type="datetime-local">
+        </div>
+      </div>
+
+      <div class="quick-hint">
+        <span class="quick-hint-icon">Tip</span>
+        <span>Tekan <kbd>Ctrl</kbd>+<kbd>Enter</kbd> untuk simpan cepat</span>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="saveQuickDraft()">Simpan Draft</button>
+      <button class="btn-primary" onclick="submitQuickCapture()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Add FAB -->
+<button id="quickAddFab" class="quick-add-fab" onclick="openQuickCapture()" title="Quick Add (Ctrl+Shift+Space)">
+  <span>+</span>
+</button>
+
+<!-- Keyboard Shortcuts Modal -->
+<div id="shortcutsModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 560px;">
+    <div class="modal-header">
+      <h3>Keyboard Shortcuts</h3>
+      <button class="btn-ghost-sm" onclick="closeShortcutsModal()">✕</button>
+    </div>
+    <div class="shortcuts-list">
+      <div class="shortcut-group">
+        <h4>Global</h4>
+        <div class="shortcut-item"><span>Command Palette</span><kbd>Ctrl</kbd><kbd>K</kbd></div>
+        <div class="shortcut-item"><span>Quick Add</span><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>Space</kbd></div>
+        <div class="shortcut-item"><span>Quick Note</span><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>N</kbd></div>
+        <div class="shortcut-item"><span>Quick Task</span><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>T</kbd></div>
+        <div class="shortcut-item"><span>Quick Reminder</span><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>R</kbd></div>
+        <div class="shortcut-item"><span>Search</span><kbd>Ctrl</kbd><kbd>K</kbd></div>
+        <div class="shortcut-item"><span>New Note</span><kbd>Ctrl</kbd><kbd>N</kbd></div>
+        <div class="shortcut-item"><span>Save</span><kbd>Ctrl</kbd><kbd>S</kbd></div>
+        <div class="shortcut-item"><span>Show Help</span><kbd>Ctrl</kbd><kbd>/</kbd></div>
+        <div class="shortcut-item"><span>Close / Cancel</span><kbd>Esc</kbd></div>
+      </div>
+      <div class="shortcut-group">
+        <h4>Di Editor</h4>
+        <div class="shortcut-item"><span>Bold</span><kbd>Ctrl</kbd><kbd>B</kbd></div>
+        <div class="shortcut-item"><span>Italic</span><kbd>Ctrl</kbd><kbd>I</kbd></div>
+        <div class="shortcut-item"><span>Underline</span><kbd>Ctrl</kbd><kbd>U</kbd></div>
+        <div class="shortcut-item"><span>Slash command</span><kbd>/</kbd></div>
+        <div class="shortcut-item"><span>Wiki link</span><kbd>[[</kbd></div>
+        <div class="shortcut-item"><span>Mention</span><kbd>@</kbd></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeShortcutsModal()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PROFILE MODAL
+     ============================================================ -->
+<div id="profileModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 520px;">
+    <div class="modal-header">
+      <h3>Profil Saya</h3>
+      <button class="btn-ghost-sm" onclick="closeProfileModal()">X</button>
+    </div>
+
+    <div class="search-modal-body">
+      <div style="display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg-app);border-radius:var(--radius-lg);margin-bottom:8px;">
+        <div id="profileAvatar" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:700;flex-shrink:0;">?</div>
+        <div style="flex:1;min-width:0;">
+          <div id="profileDisplayName" style="font-size:16px;font-weight:700;color:var(--text-strong);margin-bottom:2px;">-</div>
+          <div id="profileDisplayEmail" style="font-size:13px;color:var(--text-muted);">-</div>
+          <div id="profileDisplayRole" style="font-size:11px;color:var(--text-faint);margin-top:4px;text-transform:uppercase;letter-spacing:0.04em;font-weight:600;">-</div>
+        </div>
+      </div>
+
+      <div class="search-field">
+        <label>Username</label>
+        <input id="profileUsernameInput" placeholder="Username">
+      </div>
+
+      <div class="search-field">
+        <label>Email</label>
+        <input id="profileEmailInput" type="email" disabled style="opacity:0.6;cursor:not-allowed;">
+        <span style="font-size:11px;color:var(--text-faint);margin-top:4px;">Email tidak bisa diubah sendiri. Hubungi admin.</span>
+      </div>
+
+      <div class="search-field">
+        <label>Avatar URL (opsional)</label>
+        <input id="profileAvatarInput" placeholder="https://...">
+      </div>
+
+      <div style="padding-top:16px;border-top:1px solid var(--border);">
+        <button class="btn-primary" style="width:100%;" onclick="saveProfileChanges()">
+          Simpan Perubahan
+        </button>
+      </div>
+
+      <div style="padding-top:12px;">
+        <button class="btn-ghost-sm" style="width:100%;padding:10px;border:1px solid var(--border);" onclick="openChangePasswordModal()">
+          Ubah Password
+        </button>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-head">
+          <h4>Sesi aktif</h4>
+          <button class="btn-ghost-sm" id="logoutAllBtn" onclick="logoutAllDevices()">Keluar dari semua perangkat</button>
+        </div>
+        <p class="profile-section-hint">Perangkat yang sedang masuk ke akun ini. Cabut sesi yang tidak Anda kenali.</p>
+        <div id="sessionList" class="session-list" aria-live="polite"></div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-head">
+          <h4>Riwayat login</h4>
+        </div>
+        <div id="loginHistoryList" class="history-list" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CHANGE PASSWORD MODAL
+     ============================================================ -->
+<div id="onboardModal" class="modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="onboardTitle">
+  <div class="modal-content" style="max-width: 460px;">
+    <div class="modal-header">
+      <h3 id="onboardTitle">Selamat datang</h3>
+      <button class="btn-ghost-sm" onclick="navCloseOnboarding()">Lewati</button>
+    </div>
+    <div class="search-modal-body">
+      <p id="onboardStep" class="onboard-step"></p>
+      <p id="onboardText" class="onboard-text"></p>
+      <div class="onboard-actions">
+        <button class="btn-ghost-sm" id="onboardAction" style="display:none;"></button>
+        <button class="btn-primary" id="onboardNext">Lanjut</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="changePasswordModal" class="modal" style="display:none;">
+  <div class="modal-content" style="max-width: 460px;">
+    <div class="modal-header">
+      <h3>Ubah Password</h3>
+      <button class="btn-ghost-sm" onclick="closeChangePasswordModal()">X</button>
+    </div>
+
+    <div class="search-modal-body">
+      <div style="padding:12px 14px;background:rgba(14,165,233,0.08);border-left:3px solid var(--info);border-radius:var(--radius);font-size:12.5px;color:var(--text);margin-bottom:8px;line-height:1.5;">
+        Setelah password diubah, Anda akan <strong>otomatis logout</strong> dari semua device dan harus login ulang.
+      </div>
+
+      <div class="search-field">
+        <label>Password Lama *</label>
+        <input id="cpOldPassword" type="password" placeholder="Masukkan password saat ini" autocomplete="current-password">
+      </div>
+
+      <div class="search-field">
+        <label>Password Baru *</label>
+        <input id="cpNewPassword" type="password" placeholder="Minimal 10 karakter" autocomplete="new-password">
+      </div>
+
+      <div class="search-field">
+        <label>Konfirmasi Password Baru *</label>
+        <input id="cpConfirmPassword" type="password" placeholder="Ulangi password baru" autocomplete="new-password">
+      </div>
+
+      <div id="cpStrength" style="font-size:11.5px;color:var(--text-muted);margin-top:-4px;"></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-ghost-sm" onclick="closeChangePasswordModal()">Batal</button>
+      <button class="btn-primary" onclick="submitChangePassword()" id="cpSubmitBtn">Ubah Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<!-- Hidden file input -->
+<input type="file" id="fileInput" style="display:none" multiple>
+
+<!-- ============================================================
+     SCRIPTS
+     ============================================================ -->
+<!-- External libs -->
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill-better-table@1.2.10/dist/quill-better-table.js"></script>
+
+<!-- App modules — URUTAN WAJIB SEPERTI INI -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.16/dist/purify.min.js" integrity="sha384-a7SzOxErzJ3ZpQz0zJ32d67dSitNzPcbfybc/ykU9KJhMgZkwqfSxlhhdJRS+XGL" crossorigin="anonymous"></script>
+<script src="/static/js/0-sanitize.js"></script>
+<script src="/static/js/1-core.js"></script>
+<script src="/static/js/1a-nav.js"></script>
+<script src="/static/js/2-auth.js"></script>
+<script src="/static/js/3-notes.js"></script>
+<script src="/static/js/3a-autosave.js"></script>
+<script src="/static/js/4-productivity.js"></script>
+<script src="/static/js/5-extras.js"></script>
+<script src="/static/js/6-advanced.js"></script>
+<script src="/static/js/7-ai.js"></script>
+
+</body>
+</html>

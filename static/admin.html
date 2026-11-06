@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Notebook</title>
+<style>
+:root {
+  /* jembatan ke token tema (theme.css): admin memakai nama lama --bg/--panel/--muted */
+  --bg: var(--bg-app); --panel: var(--bg-panel); --muted: var(--text-muted);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.5; min-height: 100vh;
+}
+.admin-wrap { max-width: 1280px; margin: 0 auto; padding: 24px; }
+.admin-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
+}
+.admin-header h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+.admin-header-actions { display: flex; gap: 8px; align-items: center; }
+.btn {
+  padding: 9px 16px; border-radius: var(--radius); font-size: 13px;
+  font-weight: 500; cursor: pointer; border: 1px solid var(--border);
+  background: var(--panel); color: var(--text); transition: all 0.15s;
+  white-space: nowrap; text-decoration: none; display: inline-flex;
+  align-items: center; justify-content: center;
+}
+.btn:hover { background: var(--bg-muted); }
+.btn-primary { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+.btn-primary:hover { opacity: 0.9; }
+.btn-danger { background: var(--danger); color: var(--bg-app); border-color: var(--danger); }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+.tabs {
+  display: flex; gap: 4px; margin-bottom: 20px;
+  border-bottom: 1px solid var(--border); overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 10px 16px; font-size: 13px; font-weight: 500;
+  color: var(--muted); background: transparent; border: none;
+  border-bottom: 2px solid transparent; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+
+.stats-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px; margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 18px;
+}
+.stat-value { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; }
+.stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.05em; font-weight: 600; margin-top: 4px; }
+
+.table-wrap {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  text-align: left; padding: 12px 16px; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--muted); font-weight: 600;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+}
+td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(99, 102, 241, 0.04); }
+[data-theme="dark"] tr:hover td { background: rgba(129, 140, 248, 0.06); }
+
+.role-badge {
+  display: inline-block; padding: 3px 9px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.role-admin { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; }
+.role-user { background: rgba(99, 102, 241, 0.15); color: var(--accent); }
+.role-viewer { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
+
+.status-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 6px; vertical-align: middle;
+}
+.dot-active { background: var(--success); }
+.dot-inactive { background: var(--danger); }
+
+.empty {
+  text-align: center; padding: 60px 24px; color: var(--muted); font-size: 14px;
+}
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 2000; display: none; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--panel); border-radius: 14px; border: 1px solid var(--border);
+  max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto;
+}
+.modal-header {
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-header h3 { font-size: 17px; font-weight: 600; }
+.modal-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.modal-footer {
+  padding: 16px 24px; border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 8px;
+}
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.field input, .field select {
+  padding: 10px 12px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--bg);
+  color: var(--text); font-size: 13.5px; font-family: inherit;
+}
+.field input:focus, .field select:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+.checkbox-field {
+  display: flex; align-items: center; gap: 8px; font-size: 13px;
+}
+.checkbox-field input { width: auto; }
+.help-text { font-size: 11.5px; color: var(--muted); margin-top: -2px; }
+
+.toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+  padding: 12px 20px; border-radius: var(--radius); color: #fff;
+  background: var(--text); font-size: 13px; font-weight: 500;
+  z-index: 9999; opacity: 0; transition: all 0.3s; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+
+.not-authorized {
+  text-align: center; padding: 100px 24px;
+}
+.not-authorized h2 { font-size: 22px; margin-bottom: 12px; }
+.not-authorized p { color: var(--muted); margin-bottom: 24px; }
+
+@media (max-width: 640px) {
+  .admin-wrap { padding: 16px; }
+  .admin-header h1 { font-size: 20px; }
+  th, td { padding: 10px 12px; font-size: 12px; }
+  .modal-body { padding: 18px; }
+}
+</style>
+<link rel="stylesheet" href="/static/theme.css">
+</head>
+<body>
+
+<div class="admin-wrap" id="adminWrap" style="display:none">
+  <div class="admin-header">
+    <h1>Admin Panel</h1>
+    <div class="admin-header-actions">
+      <button class="btn btn-sm" onclick="toggleTheme()" id="themeBtn">Dark</button>
+      <a href="/" class="btn btn-sm">Kembali ke App</a>
+      <button class="btn btn-sm" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="users" onclick="switchTab('users')">Users</button>
+    <button class="tab" data-tab="notes" onclick="switchTab('notes')">Catatan</button>
+    <button class="tab" data-tab="tasks" onclick="switchTab('tasks')">Tugas</button>
+    <button class="tab" data-tab="storage" onclick="switchTab('storage')">Storage</button>
+    <button class="tab" data-tab="activity" onclick="switchTab('activity')">Aktivitas</button>
+  </div>
+
+  <div id="panelUsers" class="panel"></div>
+  <div id="panelNotes" class="panel" style="display:none"></div>
+  <div id="panelTasks" class="panel" style="display:none"></div>
+  <div id="panelStorage" class="panel" style="display:none"></div>
+  <div id="panelActivity" class="panel" style="display:none"></div>
+</div>
+
+<div class="not-authorized" id="notAuth" style="display:none">
+  <h2>Akses Ditolak</h2>
+  <p>Anda tidak login sebagai admin.</p>
+  <a href="/" class="btn btn-primary">Kembali ke Login</a>
+</div>
+
+<!-- Modal Create/Edit User -->
+<div class="modal-overlay" id="userModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="userModalTitle">Buat User Baru</h3>
+      <button class="btn btn-sm" onclick="closeUserModal()">X</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="userId">
+
+      <div class="field">
+        <label>Username *</label>
+        <input id="userUsername" placeholder="username" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label>Email *</label>
+        <input id="userEmail" type="email" placeholder="nama@email.com" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label id="passwordLabel">Password *</label>
+        <input id="userPassword" type="password" placeholder="Minimal 6 karakter" autocomplete="new-password">
+        <span class="help-text" id="passwordHelp">Wajib diisi untuk user baru</span>
+      </div>
+
+      <div class="field">
+        <label>Role *</label>
+        <select id="userRole">
+          <option value="user">User - bisa buat & kelola catatan sendiri</option>
+          <option value="admin">Admin - akses penuh termasuk panel admin</option>
+          <option value="viewer">Viewer - hanya bisa melihat catatan yang dibagikan</option>
+        </select>
+        <span class="help-text">Admin: kelola semua user & konten. User: normal. Viewer: read-only</span>
+      </div>
+
+      <div class="checkbox-field">
+        <input type="checkbox" id="userIsActive" checked>
+        <label for="userIsActive">Akun aktif (bisa login)</label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeUserModal()">Batal</button>
+      <button class="btn btn-primary" onclick="saveUser()" id="saveUserBtn">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// STATE & HELPERS
+// ============================================================
+let token = localStorage.getItem('token') || '';
+let csrfToken = localStorage.getItem('csrf') || '';
+let allUsersCache = [];
+
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+updateThemeBtn();
+
+function updateThemeBtn() {
+  const t = document.documentElement.getAttribute('data-theme');
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = t === 'dark' ? 'Light' : 'Dark';
+}
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeBtn();
+}
+
+function showToast(msg, type = 'info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + type;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
+}
+
+function formatDate(s) {
+  if (!s) return '-';
+  return new Date(s).toLocaleString('id-ID', {
+    day: 'numeric', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
+// ============================================================
+// API
+// ============================================================
+async function api(path, opts = {}) {
+  opts.headers = opts.headers || {};
+  if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+
+  const method = (opts.method || 'GET').toUpperCase();
+  if (csrfToken && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+    opts.headers['X-CSRF-Token'] = csrfToken;
+  }
+  if (opts.body && !(opts.body instanceof FormData)) {
+    opts.headers['Content-Type'] = 'application/json';
+  }
+  opts.credentials = 'same-origin';
+
+  let res = await fetch('/api' + path, opts);
+
+  if (res.status === 401) {
+    const r = await fetch('/api/auth/refresh', {
+      method: 'POST', credentials: 'same-origin'
+    });
+    if (r.ok) {
+      const d = await r.json();
+      token = d.token;
+      csrfToken = d.csrf_token;
+      localStorage.setItem('token', token);
+      localStorage.setItem('csrf', csrfToken);
+      opts.headers['Authorization'] = 'Bearer ' + token;
+      if (csrfToken) opts.headers['X-CSRF-Token'] = csrfToken;
+      res = await fetch('/api' + path, opts);
+    } else {
+      logout();
+      return null;
+    }
+  }
+
+  if (res.status === 403) {
+    showToast('Akses ditolak. Anda bukan admin.', 'error');
+    return null;
+  }
+
+  if (res.status === 204) return null;
+  try { return await res.json(); } catch { return null; }
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('csrf');
+  localStorage.removeItem('user_role');
+  fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' })
+    .finally(() => location.href = '/');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+async function init() {
+  if (!token) {
+    const r = await fetch('/api/auth/refresh', {
+      method: 'POST', credentials: 'same-origin'
+    });
+    if (r.ok) {
+      const d = await r.json();
+      token = d.token;
+      csrfToken = d.csrf_token;
+      localStorage.setItem('token', token);
+      localStorage.setItem('csrf', csrfToken);
+    }
+  }
+
+  if (!token) {
+    showNotAuth();
+    return;
+  }
+
+  const stats = await api('/admin/stats');
+  if (!stats) {
+    showNotAuth();
+    return;
+  }
+
+  document.getElementById('adminWrap').style.display = 'block';
+  renderStats(stats);
+  loadUsers();
+}
+
+function showNotAuth() {
+  document.getElementById('adminWrap').style.display = 'none';
+  document.getElementById('notAuth').style.display = 'block';
+}
+
+// ============================================================
+// STATS
+// ============================================================
+function renderStats(s) {
+  const el = document.getElementById('statsGrid');
+  el.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-value">${s.users.total}</div>
+      <div class="stat-label">Total User</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${s.users.admin}</div>
+      <div class="stat-label">Admin</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${s.content.notes}</div>
+      <div class="stat-label">Total Catatan</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${s.content.tasks}</div>
+      <div class="stat-label">Total Tugas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${s.content.notebooks}</div>
+      <div class="stat-label">Folder</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${formatBytes(s.storage.total_size)}</div>
+      <div class="stat-label">Storage (${s.storage.total_files} file)</div>
+    </div>
+  `;
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  ['users', 'notes', 'tasks', 'storage', 'activity'].forEach(t => {
+    const panel = document.getElementById('panel' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (panel) panel.style.display = t === tab ? 'block' : 'none';
+  });
+
+  if (tab === 'users') loadUsers();
+  if (tab === 'notes') loadNotes();
+  if (tab === 'tasks') loadTasks();
+  if (tab === 'storage') loadStorage();
+  if (tab === 'activity') loadActivity();
+}
+
+// ============================================================
+// USERS
+// ============================================================
+async function loadUsers() {
+  const users = await api('/admin/users');
+  if (!users) return;
+  allUsersCache = users;
+
+  const panel = document.getElementById('panelUsers');
+
+  if (users.length === 0) {
+    panel.innerHTML = '<div class="table-wrap"><div class="empty">Belum ada user</div></div>';
+    return;
+  }
+
+  let html = `
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+      <div style="font-size:13px;color:var(--muted)">${users.length} user terdaftar</div>
+      <button class="btn btn-primary btn-sm" onclick="openCreateUser()">+ Buat User Baru</button>
+    </div>
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>User</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Dibuat</th>
+        <th style="text-align:right">Aksi</th>
+      </tr></thead>
+      <tbody>
+  `;
+
+  users.forEach(u => {
+    html += `
+      <tr>
+        <td><strong>${escapeHtml(u.username)}</strong></td>
+        <td>${escapeHtml(u.email)}</td>
+        <td><span class="role-badge role-${u.role}">${u.role}</span></td>
+        <td>
+          <span class="status-dot ${u.is_active ? 'dot-active' : 'dot-inactive'}"></span>
+          ${u.is_active ? 'Aktif' : 'Nonaktif'}
+        </td>
+        <td style="color:var(--muted);font-size:12px">${formatDate(u.created_at)}</td>
+        <td style="text-align:right">
+          <button class="btn btn-sm" onclick="editUser(${u.id})">Edit</button>
+          <button class="btn btn-sm" onclick="resetPassword(${u.id})">Reset PW</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id}, '${escapeHtml(u.username).replace(/'/g, "\\'")}')">Hapus</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += '</tbody></table></div>';
+  panel.innerHTML = html;
+}
+
+// ============================================================
+// USER MODAL
+// ============================================================
+function openCreateUser() {
+  document.getElementById('userModalTitle').textContent = 'Buat User Baru';
+  document.getElementById('userId').value = '';
+  document.getElementById('userUsername').value = '';
+  document.getElementById('userEmail').value = '';
+  document.getElementById('userPassword').value = '';
+  document.getElementById('userRole').value = 'user';
+  document.getElementById('userIsActive').checked = true;
+
+  document.getElementById('passwordLabel').textContent = 'Password *';
+  document.getElementById('passwordHelp').textContent = 'Wajib diisi untuk user baru';
+  document.getElementById('saveUserBtn').textContent = 'Buat User';
+
+  document.getElementById('userModal').classList.add('open');
+}
+
+function editUser(id) {
+  const u = allUsersCache.find(x => x.id === id);
+  if (!u) return;
+
+  document.getElementById('userModalTitle').textContent = 'Edit User';
+  document.getElementById('userId').value = u.id;
+  document.getElementById('userUsername').value = u.username;
+  document.getElementById('userEmail').value = u.email;
+  document.getElementById('userPassword').value = '';
+  document.getElementById('userRole').value = u.role;
+  document.getElementById('userIsActive').checked = u.is_active;
+
+  document.getElementById('passwordLabel').textContent = 'Password Baru (opsional)';
+  document.getElementById('passwordHelp').textContent = 'Kosongkan jika tidak ingin mengubah password';
+  document.getElementById('saveUserBtn').textContent = 'Simpan Perubahan';
+
+  document.getElementById('userModal').classList.add('open');
+}
+
+function closeUserModal() {
+  document.getElementById('userModal').classList.remove('open');
+}
+
+async function saveUser() {
+  const id = document.getElementById('userId').value;
+  const username = document.getElementById('userUsername').value.trim();
+  const email = document.getElementById('userEmail').value.trim();
+  const password = document.getElementById('userPassword').value;
+  const role = document.getElementById('userRole').value;
+  const isActive = document.getElementById('userIsActive').checked;
+
+  if (!username || !email) {
+    showToast('Username & email wajib diisi', 'error');
+    return;
+  }
+
+  const saveBtn = document.getElementById('saveUserBtn');
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Menyimpan...';
+
+  let res;
+  if (id) {
+    const payload = { username, email, role, is_active: isActive };
+    if (password) payload.new_password = password;
+    res = await api('/admin/users/' + id, {
+      method: 'PUT',
+      body: JSON.stringify(payload)
+    });
+  } else {
+    if (!password || password.length < 6) {
+      showToast('Password minimal 6 karakter', 'error');
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Buat User';
+      return;
+    }
+    res = await api('/admin/users', {
+      method: 'POST',
+      body: JSON.stringify({
+        username, email, password, role, is_active: isActive
+      })
+    });
+  }
+
+  saveBtn.disabled = false;
+  saveBtn.textContent = id ? 'Simpan Perubahan' : 'Buat User';
+
+  if (res) {
+    showToast(id ? 'User diupdate' : 'User dibuat', 'success');
+    closeUserModal();
+    loadUsers();
+    refreshStats();
+  } else {
+    showToast('Gagal menyimpan user', 'error');
+  }
+}
+
+async function resetPassword(id) {
+  const pw = prompt('Password baru (minimal 6 karakter):');
+  if (!pw) return;
+  if (pw.length < 6) {
+    showToast('Password minimal 6 karakter', 'error');
+    return;
+  }
+  const res = await api('/admin/users/' + id, {
+    method: 'PUT',
+    body: JSON.stringify({ new_password: pw })
+  });
+  if (res) showToast('Password direset', 'success');
+}
+
+async function deleteUser(id, name) {
+  if (!confirm('Hapus user "' + name + '"?\n\nSEMUA catatan, tugas, dan data user ini akan ikut terhapus permanen.')) return;
+  const res = await api('/admin/users/' + id, { method: 'DELETE' });
+  if (res) {
+    showToast('User dihapus', 'success');
+    loadUsers();
+    refreshStats();
+  }
+}
+
+async function refreshStats() {
+  const s = await api('/admin/stats');
+  if (s) renderStats(s);
+}
+
+// ============================================================
+// NOTES
+// ============================================================
+async function loadNotes() {
+  const notes = await api('/admin/notes?limit=200');
+  const panel = document.getElementById('panelNotes');
+
+  if (!notes || notes.length === 0) {
+    panel.innerHTML = '<div class="table-wrap"><div class="empty">Belum ada catatan</div></div>';
+    return;
+  }
+
+  let html = `
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>Judul</th>
+        <th>Pemilik</th>
+        <th>Kata</th>
+        <th>Status</th>
+        <th>Update</th>
+        <th style="text-align:right">Aksi</th>
+      </tr></thead>
+      <tbody>
+  `;
+
+  notes.forEach(n => {
+    html += `
+      <tr>
+        <td>${escapeHtml(n.title || '(tanpa judul)')}</td>
+        <td>@${escapeHtml(n.username)}</td>
+        <td>${n.word_count}</td>
+        <td>${n.is_trashed ? 'Sampah' : 'Aktif'}</td>
+        <td style="color:var(--muted);font-size:12px">${formatDate(n.updated_at)}</td>
+        <td style="text-align:right">
+          <button class="btn btn-sm btn-danger" onclick="adminDeleteNote(${n.id}, '${escapeHtml(n.title).replace(/'/g, "\\'")}')">Hapus</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  html += '</tbody></table></div>';
+  panel.innerHTML = html;
+}
+
+async function adminDeleteNote(id, title) {
+  if (!confirm('Hapus permanen catatan "' + title + '"?')) return;
+  const res = await api('/admin/notes/' + id, { method: 'DELETE' });
+  if (res) {
+    showToast('Catatan dihapus', 'success');
+    loadNotes();
+    refreshStats();
+  }
+}
+
+// ============================================================
+// TASKS
+// ============================================================
+async function loadTasks() {
+  const tasks = await api('/admin/tasks');
+  const panel = document.getElementById('panelTasks');
+
+  if (!tasks || tasks.length === 0) {
+    panel.innerHTML = '<div class="table-wrap"><div class="empty">Belum ada tugas</div></div>';
+    return;
+  }
+
+  let html = `
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>Judul</th>
+        <th>Pemilik</th>
+        <th>Status</th>
+        <th>Prioritas</th>
+        <th>Dibuat</th>
+      </tr></thead>
+      <tbody>
+  `;
+
+  tasks.forEach(t => {
+    html += `
+      <tr>
+        <td>${escapeHtml(t.title)}</td>
+        <td>@${escapeHtml(t.username)}</td>
+        <td>${escapeHtml(t.status)}</td>
+        <td>${escapeHtml(t.priority)}</td>
+        <td style="color:var(--muted);font-size:12px">${formatDate(t.created_at)}</td>
+      </tr>
+    `;
+  });
+
+  html += '</tbody></table></div>';
+  panel.innerHTML = html;
+}
+
+// ============================================================
+// STORAGE
+// ============================================================
+async function loadStorage() {
+  const storage = await api('/admin/storage');
+  const panel = document.getElementById('panelStorage');
+
+  if (!storage || storage.length === 0) {
+    panel.innerHTML = '<div class="table-wrap"><div class="empty">Belum ada data storage</div></div>';
+    return;
+  }
+
+  let html = `
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>User</th>
+        <th>Email</th>
+        <th>Jumlah File</th>
+        <th>Total Ukuran</th>
+      </tr></thead>
+      <tbody>
+  `;
+
+  storage.forEach(s => {
+    html += `
+      <tr>
+        <td><strong>@${escapeHtml(s.username)}</strong></td>
+        <td>${escapeHtml(s.email)}</td>
+        <td>${s.file_count}</td>
+        <td>${formatBytes(s.total_size)}</td>
+      </tr>
+    `;
+  });
+
+  html += '</tbody></table></div>';
+  panel.innerHTML = html;
+}
+
+// ============================================================
+// ACTIVITY
+// ============================================================
+async function loadActivity() {
+  const activity = await api('/admin/activity');
+  const panel = document.getElementById('panelActivity');
+
+  if (!activity || activity.length === 0) {
+    panel.innerHTML = '<div class="table-wrap"><div class="empty">Belum ada aktivitas</div></div>';
+    return;
+  }
+
+  let html = `
+    <div class="table-wrap"><table>
+      <thead><tr>
+        <th>User</th>
+        <th>Aksi</th>
+        <th>Deskripsi</th>
+        <th>IP</th>
+        <th>Waktu</th>
+      </tr></thead>
+      <tbody>
+  `;
+
+  activity.forEach(a => {
+    html += `
+      <tr>
+        <td>@${escapeHtml(a.username)}</td>
+        <td><code style="font-size:11px">${escapeHtml(a.action)}</code></td>
+        <td>${escapeHtml(a.description)}</td>
+        <td style="color:var(--muted);font-size:11px">${escapeHtml(a.ip)}</td>
+        <td style="color:var(--muted);font-size:12px">${formatDate(a.created_at)}</td>
+      </tr>
+    `;
+  });
+
+  html += '</tbody></table></div>';
+  panel.innerHTML = html;
+}
+
+// ============================================================
+// START
+// ============================================================
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

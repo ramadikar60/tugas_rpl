@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catatan Dibagikan — Mindora</title>
+<style>
+:root {
+  --bg-app: #fafafa;
+  --bg-panel: #ffffff;
+  --text-strong: #0a0a0a;
+  --text: #18181b;
+  --text-muted: #71717a;
+  --border: #e4e4e7;
+  --accent: #18181b;
+  --danger: #dc2626;
+  --radius: 10px;
+}
+[data-theme="dark"] {
+  --bg-app: #09090b;
+  --bg-panel: #0f0f10;
+  --text-strong: #fafafa;
+  --text: #e4e4e7;
+  --text-muted: #a1a1aa;
+  --border: #26262b;
+  --accent: #fafafa;
+  --danger: #f87171;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg-app);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+.shared-page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+.shared-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.shared-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  color: var(--text-strong);
+  font-size: 15px;
+}
+.brand-dot {
+  width: 16px; height: 16px;
+  border-radius: 5px;
+  background: var(--accent);
+  position: relative;
+}
+.brand-dot::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  background: var(--bg-app);
+  border-radius: 1.5px;
+}
+.shared-page h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-strong);
+  margin-bottom: 24px;
+  line-height: 1.25;
+}
+.shared-content {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text);
+}
+.shared-content h1 { font-size: 26px; font-weight: 700; margin: 24px 0 12px; }
+.shared-content h2 { font-size: 21px; font-weight: 600; margin: 20px 0 10px; }
+.shared-content h3 { font-size: 17px; font-weight: 600; margin: 16px 0 8px; }
+.shared-content p { margin: 8px 0; }
+.shared-content img { max-width: 100%; border-radius: 8px; margin: 12px 0; }
+.shared-content code {
+  background: var(--border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 14px;
+}
+.shared-content pre.ql-syntax {
+  background: var(--border);
+  padding: 14px 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.shared-content blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 16px;
+  color: var(--text-muted);
+  margin: 12px 0;
+}
+.shared-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+}
+.shared-content td,
+.shared-content th {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+}
+.shared-content th {
+  background: var(--border);
+  font-weight: 600;
+}
+.shared-content ul,
+.shared-content ol { padding-left: 24px; margin: 8px 0; }
+.shared-content a { color: var(--accent); text-decoration: underline; }
+.shared-content hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.shared-content li[data-list=checked],
+.shared-content li[data-list=unchecked] {
+  list-style: none;
+  position: relative;
+  padding-left: 26px;
+}
+.shared-content li[data-list=checked]::before,
+.shared-content li[data-list=unchecked]::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 5px;
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-panel);
+}
+.shared-content li[data-list=checked]::before {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.shared-content li[data-list=checked]::after {
+  content: '';
+  position: absolute;
+  left: 5px; top: 9px;
+  width: 5px; height: 8px;
+  border: solid var(--bg-panel);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.shared-footer {
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.shared-footer a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.shared-footer a:hover { text-decoration: underline; }
+.shared-error {
+  text-align: center;
+  padding: 80px 24px;
+  color: var(--text-muted);
+}
+.shared-error h2 { font-size: 20px; font-weight: 600; margin-bottom: 8px; color: var(--text-strong); }
+.password-form {
+  max-width: 360px;
+  margin: 100px auto;
+  padding: 40px 32px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.08);
+}
+.password-form h2 { font-size: 20px; font-weight: 600; margin-bottom: 6px; color: var(--text-strong); }
+.password-form p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+.password-form input {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--bg-app);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--text-strong);
+  margin-bottom: 14px;
+  outline: none;
+}
+.password-form input:focus { border-color: var(--accent); }
+.password-form button {
+  width: 100%;
+  padding: 11px 16px;
+  background: var(--accent);
+  color: var(--bg-app);
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.password-form button:hover { opacity: 0.9; }
+.notebook-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 24px;
+}
+.notebook-item {
+  padding: 16px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-strong);
+}
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  width: 32px; height: 32px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text);
+}
+.theme-toggle:hover { background: var(--border); }
+</style>
+<link rel="stylesheet" href="/static/theme.css">
+</head>
+<body>
+
+<div class="shared-page" id="sharedPage">
+  <div class="shared-header">
+    <div class="shared-brand">
+      <span class="brand-dot"></span>
+      <span>Mindora</span>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/></svg></button>
+  </div>
+  <div id="sharedContent">
+    <div class="shared-error">
+      <h2>Memuat...</h2>
+    </div>
+  </div>
+  <div class="shared-footer" id="sharedFooter" style="display:none;">
+    Dibagikan melalui <a href="/">Mindora</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.16/dist/purify.min.js" integrity="sha384-a7SzOxErzJ3ZpQz0zJ32d67dSitNzPcbfybc/ykU9KJhMgZkwqfSxlhhdJRS+XGL" crossorigin="anonymous"></script>
+<script src="/static/js/0-sanitize.js"></script>
+<script>
+// Theme init
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+updateThemeBtn(savedTheme);
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeBtn(next);
+}
+
+function updateThemeBtn(theme) {
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.innerHTML = theme === 'dark' ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/></svg>';
+}
+
+// Parse token from URL
+const pathParts = location.pathname.split('/');
+const token = pathParts[pathParts.length - 1];
+
+if (!token || token === 'shared') {
+  showError('Link tidak valid');
+} else {
+  loadShared();
+}
+
+async function loadShared(password = '') {
+  const params = new URLSearchParams({ token });
+  if (password) params.set('password', password);
+
+  try {
+    const res = await fetch('/api/shared/access?' + params.toString());
+    const data = await res.json();
+
+    if (res.status === 401) {
+      showPasswordForm();
+      return;
+    }
+
+    if (!res.ok) {
+      showError(data.error || 'Link tidak ditemukan atau sudah kadaluarsa');
+      return;
+    }
+
+    document.getElementById('sharedFooter').style.display = 'block';
+
+    if (data.type === 'note') {
+      document.title = data.title + ' — Mindora';
+      document.getElementById('sharedContent').innerHTML = `
+        <h1>${escapeHtml(data.title)}</h1>
+        <div class="shared-content">${safeNoteHTML(data.content)}</div>
+      `;
+    } else {
+      document.title = data.title + ' — Mindora';
+      let html = `<h1>${escapeHtml(data.title)}</h1>`;
+      html += '<p style="color:var(--text-muted);margin-bottom:16px;">Kumpulan catatan</p>';
+      html += '<div class="notebook-list">';
+      (data.notes || []).forEach(n => {
+        html += `<div class="notebook-item">${escapeHtml(n.title)}</div>`;
+      });
+      html += '</div>';
+      document.getElementById('sharedContent').innerHTML = html;
+    }
+  } catch (e) {
+    console.error(e);
+    showError('Terjadi kesalahan saat memuat catatan');
+  }
+}
+
+function showError(msg) {
+  document.getElementById('sharedContent').innerHTML = `
+    <div class="shared-error">
+      <h2>Oops!</h2>
+      <p>${escapeHtml(msg)}</p>
+    </div>
+  `;
+}
+
+function showPasswordForm() {
+  document.getElementById('sharedContent').innerHTML = `
+    <div class="password-form">
+      <h2>Catatan Terlindungi</h2>
+      <p>Masukkan password untuk melihat catatan ini</p>
+      <input type="password" id="pwInput" placeholder="Password" autofocus>
+      <button onclick="submitPassword()">Buka Catatan</button>
+    </div>
+  `;
+  document.getElementById('pwInput').addEventListener('keypress', e => {
+    if (e.key === 'Enter') submitPassword();
+  });
+  document.getElementById('pwInput').focus();
+}
+
+function submitPassword() {
+  const pw = document.getElementById('pwInput').value;
+  if (!pw) return;
+  loadShared(pw);
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+</script>
+</body>
+</html>
